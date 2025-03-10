@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ text.title_current_city }}</title>
+</head>
+<body>
+    <h1>{{ text.chapter_number }} — {{ text.title_current_city }}</h1>
+    <p>{{ text.main_text }}</p>
+
+    <h3>Buzzwords:</h3>
+    <ul>
+        {% for buzzword in text.buzzword_names.all %}
+            <li>
+                {{ buzzword.buzzword }}
+                {% if buzzword.linked_file %}
+                    — <a href="{{ buzzword.linked_file.file.url }}" target="_blank">
+                        View Media
+                    </a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <p>No buzzwords available.</p>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'heads' %}">Back to list</a>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Добро пожаловать!</title>
+</head>
+<body>
+    <h1>что здесь происходит</h1>
+    <ul>
+        {% for text in texts %}
+            <li>
+                <a href="{% url 'chapter' text.pk %}">
+                    {{ text.chapter_number }} — {{ text.title_current_city }}
+                </a>
+            </li>
+        {% empty %}
+            <p>No texts available.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>
