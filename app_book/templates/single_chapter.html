@@ -8,12 +8,26 @@
 </head>
 
 <body>
+    <form method="POST">
+        {% csrf_token %}
+        {% if bookmark %}
+
+        <button>create bookmark</button>
+        {% else %}
+        <button>delete bookmark</button>
+        {% endif %}
+    </form>
     <h1>{{ text.chapter_number }} — {{ text.title_current_city }}</h1>
     <p>{{ text.main_text|replace:text.buzzword_names.all|safe }}</p>
 
     {% if next_chapter %}
     <a href="{% url 'chapter' next_chapter %}">next_page</a>
     {% endif %}
+
+    {% if prev_chapter %}
+    <a href="{% url 'chapter' prev_chapter %}">previous_page</a>
+    {% endif %}
+
 
     <h3>Buzzwords:</h3>
     <ul>

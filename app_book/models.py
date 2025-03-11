@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Text(models.Model):
@@ -12,6 +13,9 @@ class Text(models.Model):
     title_current_city = models.CharField(max_length=50)
     title_home_city = models.CharField(choices=HOME_CITY_TYPE,max_length=3)
     main_text = models.CharField(max_length=1000)
+
+    # class Meta:
+    #     ordering = TODO
 
 class MediaFile(models.Model):
 
@@ -35,3 +39,10 @@ class BuzzWord(models.Model):
 
     def __str__(self) -> str:
         return self.buzzword
+
+class Bookmarks(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    bookmark = models.ForeignKey(Text, on_delete=models.CASCADE)
+
+    # class Meta:
+    #     unique_together = ('user', 'bookmark')
