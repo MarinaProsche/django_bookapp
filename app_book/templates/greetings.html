@@ -4,7 +4,8 @@
     <title>Добро пожаловать!</title>
 </head>
 <body>
-    <h1>что здесь происходит</h1>
+    <h1>Информация</h1>
+    <a href="{% url 'heads' %}">К оглавлению</a>
     <ul>
         {% for text in texts %}
             <li>
