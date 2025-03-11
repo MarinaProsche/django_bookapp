@@ -12,7 +12,7 @@ def chapter(request, pk):
     try:
         next_chapter=Text.objects.get(pk=(pk+1)).pk
     except Text.DoesNotExist:
-        next_chapter = None
+        next_chapter = None    
     return render(request, 'single_chapter.html', {'text': chapter_text,
                                                    'chapter_buzzwords': chapter_buzzwords,
                                                    'next_chapter': next_chapter})
