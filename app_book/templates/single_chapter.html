@@ -1,11 +1,13 @@
 <!DOCTYPE html>
+{% load extra_filters %}
+
 <html>
 <head>
     <title>{{ text.title_current_city }}</title>
 </head>
 <body>
     <h1>{{ text.chapter_number }} — {{ text.title_current_city }}</h1>
-    <p>{{ text.main_text }}</p>
+    <p>{{ text.main_text|replace:text.buzzword_names.all|safe }}</p>
 
     <h3>Buzzwords:</h3>
     <ul>
