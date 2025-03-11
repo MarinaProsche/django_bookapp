@@ -23,7 +23,10 @@ class MediaFile(models.Model):
     file = models.FileField(upload_to='media_files/', blank=True, null=True)
     file_name = models.CharField(max_length=255)
     file_type = models.CharField(max_length=5, choices=MEDIA_TYPES)
-    
+
+    @property
+    def link_to_image(self):
+        return self.file.url if self.file else None 
 
 class BuzzWord(models.Model):
     buzzword = models.CharField(max_length=100)
