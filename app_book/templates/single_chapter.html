@@ -10,11 +10,12 @@
 <body>
     <form method="POST">
         {% csrf_token %}
-        {% if bookmark %}
+        {{ text.has_bookmark }}111111
+        {% if text.has_bookmark %}
 
-        <button>create bookmark</button>
-        {% else %}
         <button>delete bookmark</button>
+        {% else %}
+        <button>create bookmark</button>
         {% endif %}
     </form>
     <h1>{{ text.chapter_number }} — {{ text.title_current_city }}</h1>

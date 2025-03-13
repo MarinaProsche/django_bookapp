@@ -1,18 +1,27 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Exists, OuterRef
 from .models import Text, BuzzWord, Bookmarks
 
 def heads(request):
-    texts = Text.objects.all()
+    user = request.user
+    has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk')))
+    texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
     return render(request, 'chapters.html', {'texts': texts})
 
 def chapter(request, pk):
     chapter_text = get_object_or_404(Text, pk=pk)
     chapter_buzzwords = BuzzWord.objects.filter(text=chapter_text)
     bookmark = Bookmarks.objects.filter(user=request.user).first()
+    if_page_bookmark = chapter_text.has_bookmark
+
     if request.method == 'POST':
         if bookmark:
-            bookmark.delete()
+            if if_page_bookmark:
+                bookmark.delete()
+            else:
+                bookmark.delete()
+                Bookmarks.objects.create(user=request.user, bookmark=chapter_text)
         else:
             Bookmarks.objects.create(user=request.user, bookmark=chapter_text)
         return redirect('chapter', pk=pk)
