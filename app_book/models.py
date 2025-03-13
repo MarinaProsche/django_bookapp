@@ -14,8 +14,9 @@ class Text(models.Model):
     title_home_city = models.CharField(choices=HOME_CITY_TYPE,max_length=3)
     main_text = models.CharField(max_length=1000)
 
-    # class Meta:
-    #     ordering = TODO
+    @property
+    def has_bookmark(self):
+        return Bookmarks.objects.filter(bookmark=self).exists()
 
 class MediaFile(models.Model):
 
@@ -42,7 +43,7 @@ class BuzzWord(models.Model):
 
 class Bookmarks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    bookmark = models.ForeignKey(Text, on_delete=models.CASCADE)
+    bookmark = models.ForeignKey(Text, on_delete=models.CASCADE, related_name='bookmark')
 
     # class Meta:
     #     unique_together = ('user', 'bookmark')
