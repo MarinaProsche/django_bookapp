@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
-from .models import Text, BuzzWord, Bookmarks
+from .models import Text, BuzzWord, Bookmarks, MediaFile
 
 def heads(request):
     user = request.user
@@ -42,3 +42,9 @@ def chapter(request, pk):
 
 def greeting(request):
     return render(request, 'greetings.html')
+
+
+def postcards(request):
+    postcards = BuzzWord.objects.all()
+    # postcards = MediaFile.objects.prefetch_related('buzzword_set__text').all
+    return render(request, 'postcards.html', {'postcards': postcards})
