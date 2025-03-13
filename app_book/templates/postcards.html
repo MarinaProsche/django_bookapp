@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Оглавление</title>
+</head>
+
+<body>
+    <h1>Wall of postcards</h1>
+    <!-- {{ postcards }} -->
+    <ul>
+        {% for postcard in postcards %}
+        <li>
+            <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}">
+            {{ postcard.text.title_current_city }} --
+            {{ postcard.text.get_title_home_city_display }}
+        </li>
+        {% endfor %}
+        <a href="{% url 'heads'  %}">
+            к оглавлению
+        </a>
+    </ul>
+</body>
+
+</html>
