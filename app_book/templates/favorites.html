@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Favorites</title>
+</head>
+
+<body>
+    <h1>Wall of favorites postcards</h1>
+    <!-- {{ postcards }} -->
+    <ul>
+        {% for favorite in favorites %}
+        <li>
+            <img src="{{ favorite.favorites.file.url }}" alt="{{ favorite.favorites.file_name }}">
+            <form method="POST" action="{% url 'add_to_favorites' favorite.favorites.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                        Remove from Favorites
+                </button>
+            </form>
+
+            {% with favorite.favorites.buzzword_set.all.0.text as text %}
+            {{ text.title_current_city }} --
+            {{ text.get_title_home_city_display }}
+            <a href="{% url 'chapter' text.pk %}">go to postcard</a>
+        {% endwith %}
+        </li>
+        {% endfor %}
+        <a href="{% url 'heads'  %}">
+            к оглавлению
+        </a>
+    </ul>
+</body>
+
+</html>

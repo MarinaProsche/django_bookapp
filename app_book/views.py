@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
-from .models import Text, BuzzWord, Bookmarks, MediaFile
+from .models import Text, BuzzWord, Bookmarks, MediaFile, Favorites
 
 def heads(request):
     user = request.user
@@ -43,8 +43,23 @@ def chapter(request, pk):
 def greeting(request):
     return render(request, 'greetings.html')
 
-
 def postcards(request):
     postcards = BuzzWord.objects.all()
-    # postcards = MediaFile.objects.prefetch_related('buzzword_set__text').all
-    return render(request, 'postcards.html', {'postcards': postcards})
+    favorites = Favorites.objects.filter(user=request.user).values_list('favorites_id', flat=True)
+
+    return render(request, 'postcards.html', {
+        'postcards': postcards,
+        'favorites': favorites
+    })
+
+def add_to_favorite(request, id):
+    fav_picture = get_object_or_404(MediaFile, id=id)
+    print(fav_picture,11111)
+    add_to_fav, if_exist = Favorites.objects.get_or_create(user=request.user, favorites=fav_picture)
+    if not if_exist:
+        add_to_fav.delete() 
+    return redirect('postcards')
+
+def favorites(request):
+    favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
+    return render(request, 'favorites.html', {'favorites': favorites})

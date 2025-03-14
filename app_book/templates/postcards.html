@@ -14,6 +14,19 @@
             <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}">
             {{ postcard.text.title_current_city }} --
             {{ postcard.text.get_title_home_city_display }}
+            <a href="{% url 'chapter' postcard.text.pk %}">к открытке</a>
+            <form method="POST" action="{% url 'add_to_favorites' postcard.id %}">
+                {% csrf_token %}
+                <button type="submit">
+                    {% if postcard.id in favorites %}
+                        Remove from Favorites
+                    {% else %}
+                        Add to Favorites
+                    {% endif %}
+                </button>
+
+
+            </form>
         </li>
         {% endfor %}
         <a href="{% url 'heads'  %}">
