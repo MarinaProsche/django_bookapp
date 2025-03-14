@@ -45,5 +45,9 @@ class Bookmarks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     bookmark = models.ForeignKey(Text, on_delete=models.CASCADE, related_name='bookmark')
 
+class Favorites(models.Model):
+    user = user = models.ForeignKey(User, on_delete=models.CASCADE)
+    favorites = models.ForeignKey(MediaFile, on_delete=models.CASCADE, related_name = 'favorites')
+
     # class Meta:
     #     unique_together = ('user', 'bookmark')
