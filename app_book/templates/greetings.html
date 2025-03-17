@@ -5,17 +5,23 @@
 </head>
 <body>
     <h1>Информация</h1>
+    {% if not user.is_authenticated %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Войти</button>
+
+
+    </form>
+    {% else %}
+    <a href="{% url 'logout' %}">Выйти</a>
     <a href="{% url 'heads' %}">К оглавлению</a>
-    <ul>
-        {% for text in texts %}
-            <li>
-                <a href="{% url 'chapter' text.pk %}">
-                    {{ text.chapter_number }} — {{ text.title_current_city }}
-                </a>
-            </li>
-        {% empty %}
-            <p>No texts available.</p>
-        {% endfor %}
-    </ul>
+{% endif %}
 </body>
 </html>

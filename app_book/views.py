@@ -1,28 +1,48 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 from .models import Text, BuzzWord, Bookmarks, MediaFile, Favorites
 
-def heads(request):
+
+def greeting(request):
     user = request.user
-    has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk')))
+    if request.method == 'POST':
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('heads')
+        else:
+            messages.error(request, 'Error')
+    return render(request, 'greetings.html')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('greeting')
+
+@login_required
+def heads(request):
+    has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user))
     texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
     return render(request, 'chapters.html', {'texts': texts})
 
+@login_required
 def chapter(request, pk):
     chapter_text = get_object_or_404(Text, pk=pk)
     chapter_buzzwords = BuzzWord.objects.filter(text=chapter_text)
-    bookmark = Bookmarks.objects.filter(user=request.user).first()
-    if_page_bookmark = chapter_text.has_bookmark
-
+    bookmark = Bookmarks.objects.filter(user=request.user, bookmark=chapter_text).first()
+    print(bookmark)
     if request.method == 'POST':
         if bookmark:
-            if if_page_bookmark:
-                bookmark.delete()
-            else:
-                bookmark.delete()
-                Bookmarks.objects.create(user=request.user, bookmark=chapter_text)
+            bookmark.delete()
         else:
+            Bookmarks.objects.filter(user=request.user).delete()
             Bookmarks.objects.create(user=request.user, bookmark=chapter_text)
         return redirect('chapter', pk=pk)
 
@@ -40,9 +60,7 @@ def chapter(request, pk):
                                                    'prev_chapter': prev_chapter,
                                                    'bookmark': bookmark})
 
-def greeting(request):
-    return render(request, 'greetings.html')
-
+@login_required
 def postcards(request):
     postcards = BuzzWord.objects.all()
     favorites = Favorites.objects.filter(user=request.user).values_list('favorites_id', flat=True)
@@ -52,14 +70,16 @@ def postcards(request):
         'favorites': favorites
     })
 
+@login_required
 def add_to_favorite(request, id):
     fav_picture = get_object_or_404(MediaFile, id=id)
-    print(fav_picture,11111)
     add_to_fav, if_exist = Favorites.objects.get_or_create(user=request.user, favorites=fav_picture)
     if not if_exist:
-        add_to_fav.delete() 
+        add_to_fav.delete()
+        return redirect('favorites')
     return redirect('postcards')
 
+@login_required
 def favorites(request):
     favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
     return render(request, 'favorites.html', {'favorites': favorites})

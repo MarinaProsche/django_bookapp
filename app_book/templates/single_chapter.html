@@ -10,9 +10,7 @@
 <body>
     <form method="POST">
         {% csrf_token %}
-        {{ text.has_bookmark }}111111
-        {% if text.has_bookmark %}
-
+        {% if bookmark %}
         <button>delete bookmark</button>
         {% else %}
         <button>create bookmark</button>
