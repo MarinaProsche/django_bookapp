@@ -1,9 +1,10 @@
-
+import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from .models import Text, BuzzWord, Bookmarks, MediaFile, Favorites
 
@@ -83,3 +84,20 @@ def add_to_favorite(request, id):
 def favorites(request):
     favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
     return render(request, 'favorites.html', {'favorites': favorites})
+
+from django.core.serializers import serialize
+from django.http import JsonResponse
+
+def map(request):
+    locations = Text.objects.all().values(
+        'pk',
+        'title_current_city',
+        'title_current_city_coord'
+    )
+    for location in locations:
+        location['url'] = f"/chapters/{location['pk']}/"
+
+    return render(request, 'map.html', {
+        'locations_json': json.dumps(list(locations)),
+        'key': settings.GOOGLE_API_KEY
+    })

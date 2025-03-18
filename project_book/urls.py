@@ -14,6 +14,7 @@ urlpatterns = [
     path('postcards', views.postcards, name='postcards'),
     path('add_to_favorite/<int:id>', views.add_to_favorite, name='add_to_favorites'),
     path('favorites/', views.favorites, name='favorites'),
-    path('logout/', views.logout_view, name='logout')
+    path('logout/', views.logout_view, name='logout'),
+    path('map/', views.map, name='map'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

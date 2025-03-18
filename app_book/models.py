@@ -11,6 +11,7 @@ class Text(models.Model):
 
     chapter_number = models.IntegerField(unique=True)
     title_current_city = models.CharField(max_length=50)
+    title_current_city_coord = models.CharField(max_length=100)
     title_home_city = models.CharField(choices=HOME_CITY_TYPE,max_length=3)
     main_text = models.CharField(max_length=1000)
 

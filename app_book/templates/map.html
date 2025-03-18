@@ -1,0 +1,64 @@
+<!-- Don't format this file! -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Map with Clickable Markers</title>
+    <script async src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=maps,marker&v=beta"></script>
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <script>
+function initMap() {
+    const map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 50.1136, lng: 8.6785 },
+        zoom: 4,
+        mapId: "DEMO_MAP_ID"
+    });
+
+    const locations = {{ locations_json|safe }};
+
+    locations.forEach(location => {
+        const marker = new google.maps.Marker({
+            position: {
+                lat: parseFloat(location.title_current_city_coord.split(',')[0]),
+                lng: parseFloat(location.title_current_city_coord.split(',')[1])
+            },
+            map,
+            title: location.title_current_city
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+            content: `<div>
+                        <p><strong>${location.title_current_city}</strong></p>
+                        <p><a href="${location.url}" target="_blank">Go to postcard</a></p>
+                      </div>`
+        });
+
+        marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+        });
+    });
+}
+    </script>
+
+
+</body>
+</html>
