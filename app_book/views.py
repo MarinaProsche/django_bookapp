@@ -59,7 +59,8 @@ def chapter(request, pk):
                                                    'chapter_buzzwords': chapter_buzzwords,
                                                    'next_chapter': next_chapter,
                                                    'prev_chapter': prev_chapter,
-                                                   'bookmark': bookmark})
+                                                   'bookmark': bookmark,
+    })
 
 @login_required
 def postcards(request):
@@ -85,8 +86,8 @@ def favorites(request):
     favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
     return render(request, 'favorites.html', {'favorites': favorites})
 
-from django.core.serializers import serialize
-from django.http import JsonResponse
+# from django.core.serializers import serialize
+# from django.http import JsonResponse
 
 def map(request):
     locations = Text.objects.all().values(

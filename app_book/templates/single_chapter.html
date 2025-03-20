@@ -17,7 +17,7 @@
         {% endif %}
     </form>
     <h1>{{ text.chapter_number }} — {{ text.title_current_city }}</h1>
-    <p>{{ text.main_text|replace:text.buzzword_names.all|safe }}</p>
+    <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr  }}</p>
 
     {% if next_chapter %}
     <a href="{% url 'chapter' next_chapter %}">next_page</a>
@@ -43,7 +43,6 @@
         <p>No buzzwords available.</p>
         {% endfor %}
     </ul>
-
     <a href="{% url 'heads' %}">Back to list</a>
 </body>
 
