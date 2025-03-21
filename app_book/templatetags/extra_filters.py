@@ -18,7 +18,9 @@ register = template.Library()
 @register.filter(name='replace')
 def replace(text, buzzwords):
     for buzzword in buzzwords:
-        pattern = rf'(?i)\b{re.escape(buzzword.buzzword)}\b' #case-insensitive, includes spec symbols just in case
+        pattern = rf'(?i)(?<!\w){re.escape(buzzword.buzzword)}(?!\w|\.)'
+        # pattern = rf'(?i)(?<!\w){re.escape(buzzword.buzzword)}(?!\w)'
+        # pattern = rf'(?i)\b{re.escape(buzzword.buzzword)}\b' #case-insensitive, includes spec symbols just in case
         def replace_case(match):
             matched_text = match.group(0)
             output_ex = f"<a href='{buzzword.linked_file.link_to_image}'>{matched_text}</a>"

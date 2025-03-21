@@ -86,9 +86,6 @@ def favorites(request):
     favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
     return render(request, 'favorites.html', {'favorites': favorites})
 
-# from django.core.serializers import serialize
-# from django.http import JsonResponse
-
 def map(request):
     locations = Text.objects.all().values(
         'pk',
