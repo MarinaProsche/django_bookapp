@@ -9,7 +9,7 @@ class BuzzWordAdmin(admin.ModelAdmin):
 
 @admin.register(Text)
 class TextAdmin(admin.ModelAdmin):
-    list_display = ('chapter_number', 'title_current_city', 'title_home_city', 'main_text', 'buzzwords')
+    list_display = ('chapter_number', 'title_current_city', 'title_current_city_coord', 'title_home_city', 'main_text', 'buzzwords')
 
 
     def buzzwords(self, obj):
@@ -20,4 +20,8 @@ class TextAdmin(admin.ModelAdmin):
 
 @admin.register(MediaFile)
 class MediaFileAdmin(admin.ModelAdmin):
-    list_display = ('file', 'file_name', 'file_type')
+    list_display = ('file', 'file_name', 'file_type', 'buzzwords')
+
+    def buzzwords(self, obj):
+        return ', '.join([buzzword.buzzword for buzzword in obj.buzzword_set.all()])
+    buzzwords.short_description = 'Buzzwords'

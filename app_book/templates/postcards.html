@@ -10,15 +10,14 @@
     <!-- {{ postcards }} -->
     <ul>
         {% for postcard in postcards %}
-        <li>
-            <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}">
+            <img src="{{ postcard.linked_file.file }}" alt="{{ postcard.linked_file.file_name }}">
             {{ postcard.text.title_current_city }} --
             {{ postcard.text.get_title_home_city_display }}
             <a href="{% url 'chapter' postcard.text.pk %}">к открытке</a>
-            <form method="POST" action="{% url 'add_to_favorites' postcard.id %}">
+            <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}">
                 {% csrf_token %}
                 <button type="submit">
-                    {% if postcard.id in favorites %}
+                    {% if postcard.linked_file.id in favorites %}
                         Remove from Favorites
                     {% else %}
                         Add to Favorites

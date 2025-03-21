@@ -73,8 +73,8 @@ def postcards(request):
     })
 
 @login_required
-def add_to_favorite(request, id):
-    fav_picture = get_object_or_404(MediaFile, id=id)
+def add_to_favorite(request, pic_id):
+    fav_picture = get_object_or_404(MediaFile, id=pic_id)
     add_to_fav, if_exist = Favorites.objects.get_or_create(user=request.user, favorites=fav_picture)
     if not if_exist:
         add_to_fav.delete()

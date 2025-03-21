@@ -44,15 +44,13 @@ class Command(BaseCommand):
                 chapter.get('buzzword-3', '')
             ]
 
-            #TODO
-            linked_file = MediaFile.objects.create(
-                file='/home/marina/src/bookapp/app_for_book/media/media_files/1_pushkin_IpxeppB.jpg',
-                file_name = '1',
-                file_type = 'image')
-            
             text_obj = self.add_text_to_base(chapter_number, text, title_home_city, title_current_city, coord)
             for buzzword in buzzwords:
                 if buzzword:
+                    linked_file = MediaFile.objects.create(
+                        file='example.jpg',
+                        file_name = 'to be changed',
+                        file_type = 'image')
                     self.add_buzzwords_to_base(buzzword=buzzword, linked_file=linked_file, text_obj=text_obj)
 
         self.stdout.write(self.style.SUCCESS('SUCCESS'))

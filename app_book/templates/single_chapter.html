@@ -16,7 +16,9 @@
         <button>create bookmark</button>
         {% endif %}
     </form>
-    <h1>{{ text.chapter_number }} — {{ text.title_current_city }}</h1>
+    <h1>{{ text.chapter_number }}
+        {{ text.title_current_city }}
+    {{ text.get_title_home_city_display }}</h1>
     <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr  }}</p>
 
     {% if next_chapter %}
@@ -34,7 +36,7 @@
         <li>
             {{ buzzword.buzzword }}
             {% if buzzword.linked_file %}
-            — <a href="{{ buzzword.linked_file.file.url }}" target="_blank">
+            — <a href="https://drive.google.com/file/d/10_dBkLrDStGYpHcZEFY3WoPxrW9nxDno/view" target="_blank">
                 View Media
             </a>
             {% endif %}
