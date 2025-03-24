@@ -41,7 +41,6 @@ class Command(BaseCommand):
 
                 for buzzword, picture in zip(current_buzzwords, pictures):
                     if picture:
-                        print(buzzword, picture, 4444)
                         buzzword.linked_file.file = convert_drive_link(picture)
                         buzzword.linked_file.save()
         self.stdout.write(self.style.SUCCESS('SUCCESS'))

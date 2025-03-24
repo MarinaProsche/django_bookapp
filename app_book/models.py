@@ -9,7 +9,7 @@ class Text(models.Model):
         ('eng', 'Saint Petersburg'),
     ]
 
-    chapter_number = models.IntegerField(unique=True)
+    chapter_number = models.IntegerField(primary_key=True)
     title_current_city = models.CharField(max_length=50)
     title_current_city_coord = models.CharField(max_length=100)
     title_home_city = models.CharField(choices=HOME_CITY_TYPE,max_length=3)
@@ -37,14 +37,14 @@ class MediaFile(models.Model):
 class BuzzWord(models.Model):
     buzzword = models.CharField(max_length=100)
     linked_file = models.ForeignKey(MediaFile, on_delete=models.CASCADE)
-    text = models.ForeignKey(Text, on_delete=models.CASCADE, related_name='buzzword_names')
+    text = models.ForeignKey(Text, on_delete=models.CASCADE, to_field='chapter_number', related_name='buzzword_names')
 
     def __str__(self) -> str:
         return self.buzzword
 
 class Bookmarks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    bookmark = models.ForeignKey(Text, on_delete=models.CASCADE, related_name='bookmark')
+    bookmark = models.ForeignKey(Text, on_delete=models.CASCADE, to_field='chapter_number', related_name='bookmark')
 
 class Favorites(models.Model):
     user = user = models.ForeignKey(User, on_delete=models.CASCADE)

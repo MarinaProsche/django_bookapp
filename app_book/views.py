@@ -78,7 +78,9 @@ def add_to_favorite(request, pic_id):
     add_to_fav, if_exist = Favorites.objects.get_or_create(user=request.user, favorites=fav_picture)
     if not if_exist:
         add_to_fav.delete()
-        return redirect('favorites')
+        if request.GET.get('from') == 'favorites':
+            return redirect('favorites')
+        return redirect('postcards')
     return redirect('postcards')
 
 @login_required

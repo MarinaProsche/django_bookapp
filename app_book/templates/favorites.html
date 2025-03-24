@@ -12,7 +12,7 @@
         {% for favorite in favorites %}
         <li>
             <img src="{{ favorite.favorites.file }}" alt="{{ favorite.favorites.file_name }}">
-            <form method="POST" action="{% url 'add_to_favorites' favorite.favorites.id %}">
+            <form method="POST" action="{% url 'add_to_favorites' favorite.favorites.id %}?from=favorites">
                 {% csrf_token %}
                 <button type="submit">
                         Remove from Favorites
