@@ -1,28 +1,41 @@
-<!DOCTYPE html>
-{% include 'index.html' %}
-<html>
-<head>
-    <title>Добро пожаловать!</title>
-</head>
-<body>
-    <h1>Информация</h1>
-    {% if not user.is_authenticated %}
+{% extends 'index.html' %}
 
-    <form method="POST">
-        {% csrf_token %}
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username" required>
+{% load static %}
 
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required>
+{% block title %}Добро пожаловать!{% endblock %}
 
-        <button type="submit">Войти</button>
+{% block content %}
+    <div class="container">
+        <h1 class="title-text text-center mt-1 mb-2">ИНТЕРАКТИВНАЯ КНИГА-ВСЕЛЕННАЯ</h1>
+        <div class="image-container">
+            <img src="{% static 'images/greetings.jpg' %}"
+                 class="img-fluid small-image d-block mx-auto {% if user.is_authenticated %}opacity-100{% else %}opacity-70{% endif %}" 
+                 alt="">
 
+            {% if not user.is_authenticated %}
+            <div class="form-overlay">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Пожалуйста, зарегистрируйтесь:</label>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Имя пользователя" required>
+                    </div>
 
-    </form>
-    {% else %}
-    <a href="{% url 'logout' %}">Выйти</a>
-    <a href="{% url 'heads' %}">К оглавлению</a>
-{% endif %}
-</body>
-</html>
+                    <div class="mb-3">
+                        <label for="password" class="form-label"></label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-lavender w-100">Войти</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="text-center mt-4">
+            <a href="{% url 'heads' %}" class="btn btn-lavender">К оглавлению</a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}  <!-- Закрытие блока content -->
