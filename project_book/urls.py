@@ -10,7 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('chapters/', views.heads, name='heads'),
     path('chapters/<int:pk>/', views.chapter, name='chapter'),
-    path('', views.greeting, name='greeting'),
+    path('greetings', views.greeting, name='greeting'),
     path('postcards', views.postcards, name='postcards'),
     path('add_to_favorite/<int:pic_id>/', views.add_to_favorite, name='add_to_favorites'),
     path('favorites/', views.favorites, name='favorites'),
@@ -19,4 +19,3 @@ urlpatterns = [
     path('', include('pwa.urls')),
     # path('offline/', cache_page(settings.PWA_APP_NAME)(pwa_views.offline.as_view())),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
