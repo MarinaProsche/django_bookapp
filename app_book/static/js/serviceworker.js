@@ -1,6 +1,6 @@
 
 var staticCacheName = 'djangopwa-v1';
- 
+
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
@@ -10,7 +10,7 @@ self.addEventListener('install', function(event) {
     })
   );
 });
- 
+
 self.addEventListener('fetch', function(event) {
   var requestUrl = new URL(event.request.url);
     if (requestUrl.origin === location.origin) {
