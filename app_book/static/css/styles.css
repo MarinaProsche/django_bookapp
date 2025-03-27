@@ -66,3 +66,10 @@ img.icon {
 .icon-link:hover {
     background-color: #D8BFD8; /* change color with cursor */
 }
+
+.all-chapters {
+    text-decoration: none; /* rid of underline */
+    color: #272429;
+    font-size: 1.2rem;
+
+}

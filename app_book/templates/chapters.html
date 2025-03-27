@@ -3,19 +3,36 @@
 <html>
 <head>
     <title>Оглавление</title>
+
 </head>
 <body>
-    <h1>List of Texts</h1>
-    <ul>
-        {% for text in texts %}
-            <li>
-                <a href="{% url 'chapter' text.pk %}">
-                    {{ text.chapter_number }} — {{ text.title_current_city }}
-                </a>
-            </li>
-        {% empty %}
-            <p>No texts available.</p>
-        {% endfor %}
-    </ul>
+    <div class="container py-3">
+        <h1 class="text-center mb-4">Оглавление</h1>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tbody>
+                    {% for text in texts %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'chapter' text.pk %}" class="all-chapters">
+                                <strong>{{ text.title_current_city }}</strong>
+                                {% if text.title_home_city %}
+                                <div class="text-muted">→ {{ text.get_title_home_city_display }}</div>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="text-end">
+                            <img src="{{ text.chapter_cover }}" alt="{{ text.title_current_city }}" class="img-thumbnail" style="max-width: 100px; height: auto;">
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center">No texts available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

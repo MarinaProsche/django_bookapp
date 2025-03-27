@@ -14,6 +14,7 @@ class Text(models.Model):
     title_current_city_coord = models.CharField(max_length=100)
     title_home_city = models.CharField(choices=HOME_CITY_TYPE,max_length=3)
     main_text = models.CharField(max_length=1000)
+    chapter_cover = models.FileField(upload_to='media_files/', blank=True, null=True)
 
     @property
     def has_bookmark(self):
