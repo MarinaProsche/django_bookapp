@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-{% load extra_filters %}
 {% include 'index.html' %}
+{% load extra_filters %}
+{% load static %}
 
-<html>
 
-<head>
-    <title>{{ text.title_current_city }}</title>
-</head>
 
+
+
+{% block content %}
 <body>
+    <div class="container py-3">
     <form method="POST">
         {% csrf_token %}
         {% if bookmark %}
@@ -17,36 +18,38 @@
         <button>create bookmark</button>
         {% endif %}
     </form>
-    <h1>{{ text.chapter_number }}
-        {{ text.title_current_city }}
-    {{ text.get_title_home_city_display }}</h1>
+    <h1 class="text-end mb-4">
+        {{ text.title_current_city }}→
+        <div class="text-muted fs-4">    {{ text.get_title_home_city_display }}</div>
+        
+</h1>
     <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr  }}</p>
 
     {% if next_chapter %}
-    <a href="{% url 'chapter' next_chapter %}">next_page</a>
+    <a href="{% url 'chapter' next_chapter %}" class="icon-link">
+        <img src="{% static 'icons/right.svg' %}" alt="Вправо" class="icon">
+        <span class="ms-2">---→</span>
+    </a>
     {% endif %}
 
     {% if prev_chapter %}
-    <a href="{% url 'chapter' prev_chapter %}">previous_page</a>
+    <br>
+    <a href="{% url 'chapter' prev_chapter %}" class="icon-link">
+        <img src="{% static 'icons/left.svg' %}" alt="Влево" class="icon">
+        <span class="ms-2">←---</span>
+        
+    </a>
     {% endif %}
 
 
-    <h3>Buzzwords:</h3>
-    <ul>
-        {% for buzzword in text.buzzword_names.all %}
-        <li>
-            {{ buzzword.buzzword }}
-            {% if buzzword.linked_file %}
-            — <a href="https://drive.google.com/file/d/10_dBkLrDStGYpHcZEFY3WoPxrW9nxDno/view" target="_blank">
-                View Media
-            </a>
-            {% endif %}
-        </li>
-        {% empty %}
-        <p>No buzzwords available.</p>
-        {% endfor %}
-    </ul>
+    
+    
+
+
+
+
     <a href="{% url 'heads' %}">Back to list</a>
+</div>
 </body>
 
-</html>
+{% endblock %}
