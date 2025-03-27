@@ -17,7 +17,7 @@ def greeting(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('heads')
+            return redirect('greeting')
         else:
             messages.error(request, 'Error')
     return render(request, 'greetings.html')

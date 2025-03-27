@@ -31,11 +31,5 @@
             </div>
             {% endif %}
         </div>
-
-        {% if user.is_authenticated %}
-        <div class="text-center mt-4">
-            <a href="{% url 'heads' %}" class="btn btn-lavender">К оглавлению</a>
-        </div>
-        {% endif %}
     </div>
 {% endblock %}  <!-- Закрытие блока content -->

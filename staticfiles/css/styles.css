@@ -1,0 +1,62 @@
+.btn-lavender {
+    background-color: #E6E6FA;
+    color: #4B0082;
+}
+.btn-lavender:hover {
+    background-color: #D8BFD8;
+}
+.toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 2px solid #E6E6FA;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+.image-container {
+    position: relative;
+    text-align: center;
+}
+.small-image {
+    max-width: 38%;
+
+}
+.form-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8); /* Уменьшена плотность фона */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 350px;
+}
+.title-text {
+    font-size: 1.5rem;
+}
+
+.opacity-100 { opacity: 1; }
+.opacity-70 { opacity: 0.7; }
+
+.icon-link {
+    text-decoration: none; /* Убирает подчеркивание ссылок */
+    display: inline-block; /* Чтобы иконки вели себя как кнопки */
+    padding: 10px;
+    background-color: #E6E6FA; /* Цвет фона */
+    border-radius: 50%; /* Делаем иконки круглыми */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
+    transition: background-color 0.3s ease;
+}
+
+.icon {
+    width: 3px; /* Размер иконки */
+    height: 300px;
+}
+
+.icon-link:hover {
+    background-color: #D8BFD8; /* Изменение цвета при наведении */
+}

@@ -41,3 +41,28 @@
 
 .opacity-100 { opacity: 1; }
 .opacity-70 { opacity: 0.7; }
+
+.icon-link {
+    text-decoration: none; /* rid of underline */
+    display: inline-block; /* buttons behavior */
+    padding: 10px;
+    /* background-color: #E6E6FA; color of background */
+    border-radius: 50%; /* round icons */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* shadow */
+    transition: background-color 0.3s ease;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+img.icon {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.icon-link:hover {
+    background-color: #D8BFD8; /* change color with cursor */
+}
