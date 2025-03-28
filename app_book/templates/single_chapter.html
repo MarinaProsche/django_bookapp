@@ -8,48 +8,53 @@
 
 
 {% block content %}
+
 <body>
     <div class="container py-3">
-    <form method="POST">
-        {% csrf_token %}
-        {% if bookmark %}
-        <button>delete bookmark</button>
-        {% else %}
-        <button>create bookmark</button>
+        <form method="POST">
+            {% csrf_token %}
+            {% if bookmark %}
+            <button class="btn btn-link p-0 border-0">
+                <img src="{% static 'icons/bookmark_full.svg' %}" alt="Удалить закладку" class="icon">
+            </button>
+            {% else %}
+            <button class="btn btn-link p-0 border-0">
+                <img src="{% static 'icons/bookmark_empty.svg' %}" alt="Создать закладку" class="icon">
+            </button>
+            {% endif %}
+        </form>
+        <h1 class="text-end mb-4">
+            {{ text.title_current_city }}→
+            <div class="text-muted fs-4"> {{ text.get_title_home_city_display }}</div>
+
+        </h1>
+        <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr }}</p>
+
+        {% if next_chapter %}
+        <a href="{% url 'chapter' next_chapter %}" class="icon-link">
+            <img src="{% static 'icons/right.svg' %}" alt="Вправо" class="icon">
+            <span class="ms-2">---→</span>
+        </a>
         {% endif %}
-    </form>
-    <h1 class="text-end mb-4">
-        {{ text.title_current_city }}→
-        <div class="text-muted fs-4">    {{ text.get_title_home_city_display }}</div>
-        
-</h1>
-    <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr  }}</p>
 
-    {% if next_chapter %}
-    <a href="{% url 'chapter' next_chapter %}" class="icon-link">
-        <img src="{% static 'icons/right.svg' %}" alt="Вправо" class="icon">
-        <span class="ms-2">---→</span>
-    </a>
-    {% endif %}
+        {% if prev_chapter %}
+        <br>
+        <a href="{% url 'chapter' prev_chapter %}" class="icon-link">
+            <img src="{% static 'icons/left.svg' %}" alt="Влево" class="icon">
+            <span class="ms-2">←---</span>
 
-    {% if prev_chapter %}
-    <br>
-    <a href="{% url 'chapter' prev_chapter %}" class="icon-link">
-        <img src="{% static 'icons/left.svg' %}" alt="Влево" class="icon">
-        <span class="ms-2">←---</span>
-        
-    </a>
-    {% endif %}
-
-
-    
-    
+        </a>
+        {% endif %}
 
 
 
 
-    <a href="{% url 'heads' %}">Back to list</a>
-</div>
+
+
+
+
+        <a href="{% url 'heads' %}">Back to list</a>
+    </div>
 </body>
 
 {% endblock %}

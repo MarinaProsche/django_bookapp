@@ -3,15 +3,13 @@
 <html>
 <head>
     <title>Оглавление</title>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container py-3">
         <h1 class="text-center mb-4">Оглавление</h1>
-        <form method="GET" class="mb-3">
-    <input type="text" name="q" class="form-control" placeholder="Поиск..." value="{{ request.GET.q }}">
-</form>
-        <div class="table-responsive">
+        <input type="text" id="search-input" class="form-control mb-3" placeholder="Поиск...">
+        <div class="table-responsive" id="results">
             <table class="table table-hover">
                 <tbody>
                     {% for text in texts %}
@@ -37,5 +35,41 @@
             </table>
         </div>
     </div>
+
+<script>
+$(document).ready(function() {
+    $('#search-input').on('input', function() {
+        const query = $(this).val();
+        $.ajax({
+            url: "{% url 'heads' %}",
+            method: "GET",
+            data: { q: query },
+            success: function(data) {
+                let resultHtml = "";
+                if (data.texts.length) {
+                    data.texts.forEach(function(text) {
+                        resultHtml += `
+                            <tr>
+                                <td>
+                                    <a href="/chapter/${text.chapter_number}" class="all-chapters">
+                                        <strong>${text.title}</strong>
+                                        <div class="text-muted">→ ${text.home_city}</div>
+                                    </a>
+                                </td>
+                                <td class="text-end">
+                                    <img src="${text.chapter_cover}" alt="${text.title}" class="img-thumbnail" style="max-width: 100px; height: auto;">
+                                </td>
+                            </tr>`;
+                    });
+                } else {
+                    resultHtml = "<tr><td colspan='2' class='text-center'>Ничего не найдено.</td></tr>";
+                }
+                $('#results tbody').html(resultHtml);
+            }
+        });
+    });
+});
+</script>
+
 </body>
 </html>

@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -31,15 +31,32 @@ def logout_view(request):
 @login_required
 def heads(request):
     has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user))
-    query = request.GET.get('q', '').strip()
+    query = request.GET.get('q', '').strip().lower()
     texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
 
     if query:
-        texts = texts.filter(
-            Q(title_current_city__icontains=query) |
-            Q(chapter_number__icontains=query)
-        )
+        texts = [
+            text for text in texts
+            if query in text.title_current_city.lower()
+            or query in str(text.chapter_number)
+            or query in text.get_title_home_city_display().lower()
+        ]
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({
+            'texts': [
+                {
+                    'title': text.title_current_city,
+                    'chapter_number': text.chapter_number,
+                    'home_city': text.get_title_home_city_display(),
+                    'cover': text.chapter_cover.url if text.chapter_cover else None
+                }
+                for text in texts
+            ]
+        })
+
     return render(request, 'chapters.html', {'texts': texts})
+
 
 @login_required
 def chapter(request, pk):
