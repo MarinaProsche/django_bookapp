@@ -2,59 +2,81 @@
 {% include 'index.html' %}
 {% load extra_filters %}
 {% load static %}
-
-
-
-
-
 {% block content %}
 
 <body>
     <div class="container py-3">
-        <form method="POST">
-            {% csrf_token %}
-            {% if bookmark %}
-            <button class="btn btn-link p-0 border-0">
-                <img src="{% static 'icons/bookmark_full.svg' %}" alt="Удалить закладку" class="icon">
-            </button>
-            {% else %}
-            <button class="btn btn-link p-0 border-0">
-                <img src="{% static 'icons/bookmark_empty.svg' %}" alt="Создать закладку" class="icon">
-            </button>
-            {% endif %}
-        </form>
-        <h1 class="text-end mb-4">
-            {{ text.title_current_city }}→
-            <div class="text-muted fs-4"> {{ text.get_title_home_city_display }}</div>
-
-        </h1>
+        <div class="d-flex align-items-center justify-content-between">
+            <form method="POST" class="me-3">
+                {% csrf_token %}
+                {% if bookmark %}
+                <button class="btn btn-link p-0 border-0">
+                    <img src="{% static 'icons/bookmark_full.svg' %}" alt="Удалить закладку" class="icon">
+                </button>
+                {% else %}
+                <button class="btn btn-link p-0 border-0">
+                    <img src="{% static 'icons/bookmark_empty.svg' %}" alt="Создать закладку" class="icon">
+                </button>
+                {% endif %}
+            </form>
+            <h1 class="text-end mb-4">
+                {{ text.title_current_city }}→
+                <div class="text-muted fs-4"> {{ text.get_title_home_city_display }}</div>
+            </h1>
+        </div>
         <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr }}</p>
 
-        {% if next_chapter %}
-        <a href="{% url 'chapter' next_chapter %}" class="icon-link">
-            <img src="{% static 'icons/right.svg' %}" alt="Вправо" class="icon">
-            <span class="ms-2">---→</span>
-        </a>
-        {% endif %}
+        <div class="d-flex justify-content-between align-items-end mt-4">
+            {% if prev_chapter %}
+            <a href="{% url 'chapter' prev_chapter %}" class="icon-link text-lavender">
+                <img src="{% static 'icons/left.svg' %}" alt="Влево" class="icon">
+                <span class="ms-2" style="color:#4B0082;">←---</span>
+            </a>
+            {% else %}
+            <div></div>
+            {% endif %}
 
-        {% if prev_chapter %}
-        <br>
-        <a href="{% url 'chapter' prev_chapter %}" class="icon-link">
-            <img src="{% static 'icons/left.svg' %}" alt="Влево" class="icon">
-            <span class="ms-2">←---</span>
-
-        </a>
-        {% endif %}
-
-
-
-
-
-
-
-
-        <a href="{% url 'heads' %}">Back to list</a>
+            {% if next_chapter %}
+            <a href="{% url 'chapter' next_chapter %}" class="icon-link text-lavender">
+                <span class="me-2" style="color:#4B0082;">---→</span>
+                <img src="{% static 'icons/right.svg' %}" alt="Вправо" class="icon">
+            </a>
+            {% endif %}
+        </div>
     </div>
+
+    <!-- Open images and video -->
+    <div id="imageModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" src="" alt="Изображение" class="img-fluid">
+        </div>
+    </div>
+
+    <script>
+        function openModal(imageUrl, event) {
+    let modal = document.getElementById("imageModal");
+    let modalContent = document.querySelector(".modal-content");
+
+    //Set image
+    document.getElementById("modalImage").src = imageUrl;
+
+    // get word's coords
+    let x = event.clientX;
+    let y = event.clientY;
+
+    // set window's coord
+    modal.style.left = `${x}px`;
+    modal.style.top = `${y}px`;
+
+    // show the window
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
+}
+    </script>
 </body>
 
 {% endblock %}
