@@ -20,7 +20,10 @@
                 {% endif %}
             </form>
             <h1 class="text-end mb-4">
-                {{ text.title_current_city }}→
+                {{ text.title_current_city }}
+                {% if text.title_home_city%}
+                →
+                {% endif %}
                 <div class="text-muted fs-4"> {{ text.get_title_home_city_display }}</div>
             </h1>
         </div>
@@ -28,18 +31,17 @@
 
         <div class="d-flex justify-content-between align-items-end mt-4">
             {% if prev_chapter %}
-            <a href="{% url 'chapter' prev_chapter %}" class="icon-link text-lavender">
-                <img src="{% static 'icons/left.svg' %}" alt="Влево" class="icon">
-                <span class="ms-2" style="color:#4B0082;">←---</span>
+            <a href="{% url 'chapter' prev_chapter %}" class="icon-link">
+                <img src="{% static 'icons/left2.svg' %}" alt="Влево" class="icon">
             </a>
             {% else %}
             <div></div>
             {% endif %}
 
             {% if next_chapter %}
-            <a href="{% url 'chapter' next_chapter %}" class="icon-link text-lavender">
-                <span class="me-2" style="color:#4B0082;">---→</span>
-                <img src="{% static 'icons/right.svg' %}" alt="Вправо" class="icon">
+            <a href="{% url 'chapter' next_chapter %}" class="icon-link">
+                
+                <img src="{% static 'icons/right2.svg' %}" alt="Вправо" class="icon">
             </a>
             {% endif %}
         </div>
