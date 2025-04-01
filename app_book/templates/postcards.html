@@ -4,35 +4,42 @@
 
 <head>
     <title>Оглавление</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
 <body>
-    <h1>Wall of postcards</h1>
-    <!-- {{ postcards }} -->
-    <ul>
-        {% for postcard in postcards %}
-            <img src="{{ postcard.linked_file.file }}" alt="{{ postcard.linked_file.file_name }}">
-            {{ postcard.text.title_current_city }} --
-            {{ postcard.text.get_title_home_city_display }}
-            <a href="{% url 'chapter' postcard.text.pk %}">к открытке</a>
-            <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}">
-                {% csrf_token %}
-                <button type="submit">
-                    {% if postcard.linked_file.id in favorites %}
-                        Remove from Favorites
-                    {% else %}
-                        Add to Favorites
-                    {% endif %}
-                </button>
-
-
-            </form>
-        </li>
-        {% endfor %}
-        <a href="{% url 'heads'  %}">
-            к оглавлению
-        </a>
-    </ul>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Wall of postcards</h1>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for postcard in postcards %}
+            <div class="col">
+                <div class="card position-relative">
+                    <!--favorite -->
+                    <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}" class="position-absolute top-0 end-0 m-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link p-0 border-0">
+                            {% if postcard.linked_file.id in favorites %}
+                                <img src="{% static 'icons/heart_full.svg' %}" alt="Remove from Favorites" class="icon-heart">
+                            {% else %}
+                                <img src="{% static 'icons/heart_empty.svg' %}" alt="Add to Favorites" class="icon-heart">
+                            {% endif %}
+                        </button>
+                    </form>
+                    <!-- Image -->
+                    <img src="{{ postcard.linked_file.file }}" alt="{{ postcard.linked_file.file_name }}" class="card-img-top fixed-size-image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
+                        {% if postcard.text.title_home_city %}
+                        <p class="card-text text-muted">→ {{ postcard.text.get_title_home_city_display }}</p>
+                        {% endif %}
+                        <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-primary">К открытке</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 
 </html>
