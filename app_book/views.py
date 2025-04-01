@@ -49,7 +49,7 @@ def heads(request):
                     'title': text.title_current_city,
                     'chapter_number': text.chapter_number,
                     'home_city': text.get_title_home_city_display(),
-                    'cover': text.chapter_cover.url if text.chapter_cover else None
+                    'cover': str(text.chapter_cover) if text.chapter_cover else None
                 }
                 for text in texts
             ]

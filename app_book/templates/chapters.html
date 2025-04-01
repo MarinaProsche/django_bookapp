@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 {% include 'index.html' %}
 <html>
+
 <head>
     <title>Оглавление</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <div class="container py-3">
         <h1 class="text-center mb-4">Оглавление</h1>
@@ -23,7 +25,8 @@
                             </a>
                         </td>
                         <td class="text-end">
-                            <img src="{{ text.chapter_cover }}" alt="{{ text.title_current_city }}" class="img-thumbnail" style="max-width: 100px; height: auto;">
+                            <img src="{{ text.chapter_cover }}" alt="{{ text.title_current_city }}"
+                                class="img-thumbnail" style="max-width: 100px; height: auto;">
                         </td>
                     </tr>
                     {% empty %}
@@ -36,40 +39,45 @@
         </div>
     </div>
 
-<script>
-$(document).ready(function() {
-    $('#search-input').on('input', function() {
-        const query = $(this).val();
-        $.ajax({
-            url: "{% url 'heads' %}",
-            method: "GET",
-            data: { q: query },
-            success: function(data) {
-                let resultHtml = "";
-                if (data.texts.length) {
-                    data.texts.forEach(function(text) {
-                        resultHtml += `
-                            <tr>
-                                <td>
-                                    <a href="/chapters/${text.chapter_number}" class="all-chapters">
-                                        <strong>${text.title}</strong>
-                                        <div class="text-muted">→ ${text.home_city}</div>
-                                    </a>
-                                </td>
-                                <td class="text-end">
-                                    <img src="${text.chapter_cover}" alt="${text.title}" class="img-thumbnail" style="max-width: 100px; height: auto;">
-                                </td>
-                            </tr>`;
-                    });
-                } else {
-                    resultHtml = "<tr><td colspan='2' class='text-center'>Ничего не найдено.</td></tr>";
-                }
-                $('#results tbody').html(resultHtml);
-            }
+    <script>
+        $(document).ready(function () {
+            $('#search-input').on('input', function () {
+                const query = $(this).val();
+                $.ajax({
+                    url: "{% url 'heads' %}",
+                    method: "GET",
+                    data: { q: query },
+                    success: function (data) {
+                        let resultHtml = "";
+                        // console.log(data.texts); //
+
+                        if (data.texts.length) {
+                            data.texts.forEach(function (text) {
+                                let chapterCover = text.cover ? text.cover : "/static/images/default-thumbnail.jpg";
+
+                                resultHtml += `
+                <tr>
+                    <td>
+                        <a href="/chapters/${text.chapter_number}" class="all-chapters">
+                            <strong>${text.title}</strong>
+                            <div class="text-muted">→ ${text.home_city}</div>
+                        </a>
+                    </td>
+                    <td class="text-end">
+                        <img src="${chapterCover}" alt="${text.title}" class="img-thumbnail" style="max-width: 100px; height: auto;">
+                    </td>
+                </tr>`;
+                            });
+                        } else {
+                            resultHtml = "<tr><td colspan='2' class='text-center'>Ничего не найдено.</td></tr>";
+                        }
+                        $('#results tbody').html(resultHtml);
+                    }
+                });
+            });
         });
-    });
-});
-</script>
+    </script>
 
 </body>
+
 </html>
