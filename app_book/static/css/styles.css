@@ -145,3 +145,8 @@ body {
     height: 400px;
     object-fit: cover;
 }
+
+.icon-heart {
+    width: 16px !important;
+    height: 16px !important;
+}

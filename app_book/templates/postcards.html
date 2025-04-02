@@ -16,18 +16,23 @@
             <div class="col">
                 <div class="card position-relative">
                     <!--favorite -->
-                    <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}" class="position-absolute top-0 end-0 m-2">
+                    <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}"
+                        class="position-absolute top-0 end-0 m-2">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-link p-0 border-0">
                             {% if postcard.linked_file.id in favorites %}
-                                <img src="{% static 'icons/heart_full.svg' %}" alt="Remove from Favorites" class="icon-heart">
+                            <img src="{% static 'icons/heart_full.png' %}" alt="Remove from Favorites"
+                                class="icon-heart" style="width: 3rem; height: 3rem;">
                             {% else %}
-                                <img src="{% static 'icons/heart_empty.svg' %}" alt="Add to Favorites" class="icon-heart">
+                            <img src="{% static 'icons/heart_empty.png' %}" alt="Add to Favorites" class="icon-heart"
+                                style="width: 3rem; height: 3rem; object-fit: contain;
+                                filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));">
                             {% endif %}
                         </button>
                     </form>
                     <!-- Image -->
-                    <img src="{{ postcard.linked_file.file }}" alt="{{ postcard.linked_file.file_name }}" class="card-img-top fixed-size-image">
+                    <img src="{{ postcard.linked_file.file }}" alt="{{ postcard.linked_file.file_name }}"
+                        class="card-img-top fixed-size-image">
                     <div class="card-body">
                         <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
                         {% if postcard.text.title_home_city %}
