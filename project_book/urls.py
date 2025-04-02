@@ -17,5 +17,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('map/', views.map, name='map'),
     path('', include('pwa.urls')),
+    path('postcard/<int:target_buzzword>/', views.single_postcard, name='single_postcard'),
     # path('offline/', cache_page(settings.PWA_APP_NAME)(pwa_views.offline.as_view())),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

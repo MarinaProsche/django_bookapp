@@ -39,6 +39,7 @@
                         <p class="card-text text-muted">→ {{ postcard.text.get_title_home_city_display }}</p>
                         {% endif %}
                         <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-primary">К открытке</a>
+                        <a href="{% url 'single_postcard' postcard.pk %}" class="btn btn-primary">открыть</a>
                     </div>
                 </div>
             </div>

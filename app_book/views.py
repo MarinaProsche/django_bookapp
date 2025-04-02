@@ -98,6 +98,13 @@ def postcards(request):
     })
 
 @login_required
+def single_postcard(request, target_buzzword):
+    postcard = BuzzWord.objects.get(id=target_buzzword)
+    file_id = postcard.linked_file.file
+    return render(request, 'single_postcard.html', {'postcard':postcard,
+                                                    'file_id':file_id})
+
+@login_required
 def add_to_favorite(request, pic_id):
     fav_picture = get_object_or_404(MediaFile, id=pic_id)
     add_to_fav, if_exist = Favorites.objects.get_or_create(user=request.user, favorites=fav_picture)
