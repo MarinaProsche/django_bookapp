@@ -1,4 +1,5 @@
 import json
+import re
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
@@ -63,7 +64,6 @@ def chapter(request, pk):
     chapter_text = get_object_or_404(Text, pk=pk)
     chapter_buzzwords = BuzzWord.objects.filter(text=chapter_text)
     bookmark = Bookmarks.objects.filter(user=request.user, bookmark=chapter_text).first()
-    print(bookmark)
     if request.method == 'POST':
         if bookmark:
             bookmark.delete()
@@ -100,7 +100,12 @@ def postcards(request):
 @login_required
 def single_postcard(request, target_buzzword):
     postcard = BuzzWord.objects.get(id=target_buzzword)
-    file_id = postcard.linked_file.file
+    file_id = str(postcard.linked_file.file)
+    match = re.search(r"id=([\w-]+)", file_id)
+    if match:
+        file_id_tr = match.group(1)
+        file_id=f"https://drive.google.com/file/d/{file_id_tr}/preview"
+    
     return render(request, 'single_postcard.html', {'postcard':postcard,
                                                     'file_id':file_id})
 

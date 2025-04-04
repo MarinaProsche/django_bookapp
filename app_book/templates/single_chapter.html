@@ -40,7 +40,7 @@
 
             {% if next_chapter %}
             <a href="{% url 'chapter' next_chapter %}" class="icon-link">
-                
+
                 <img src="{% static 'icons/right2.svg' %}" alt="Вправо" class="icon">
             </a>
             {% endif %}
@@ -52,32 +52,38 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <img id="modalImage" src="" alt="Изображение" class="img-fluid">
+            <a id="modalButton" href="#" class="btn btn-primary modal-button"><img src="{% static 'icons/maximize.svg' %}" alt="открыть шире" class="icon-wild"></a>
         </div>
     </div>
+    <style>
+        
+    </style>
 
     <script>
-        function openModal(imageUrl, event) {
-    let modal = document.getElementById("imageModal");
-    let modalContent = document.querySelector(".modal-content");
+        function openModal(imageUrl, buzzwordId, event) {
+            let modal = document.getElementById("imageModal");
 
-    //Set image
-    document.getElementById("modalImage").src = imageUrl;
+            // image
+            document.getElementById("modalImage").src = imageUrl;
 
-    // get word's coords
-    let x = event.clientX;
-    let y = event.clientY;
+            // link
+            document.getElementById("modalButton").href = `/postcard/${buzzwordId}`;
 
-    // set window's coord
-    modal.style.left = `${x}px`;
-    modal.style.top = `${y}px`;
+            // get word's coords
+            let x = event.clientX;
+            let y = event.clientY;
 
-    // show the window
-    modal.style.display = "block";
-}
+            // set window's coord
+            modal.style.left = `${x}px`;
+            modal.style.top = `${y}px`;
 
-function closeModal() {
-    document.getElementById("imageModal").style.display = "none";
-}
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
     </script>
 </body>
 
