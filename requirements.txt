@@ -1,0 +1,5 @@
+Django
+django-pwa
+gunicorn==20.1.0
+python-dotenv
+whitenoise

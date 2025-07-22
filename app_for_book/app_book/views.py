@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -23,6 +24,18 @@ def greeting(request):
         else:
             messages.error(request, 'Error')
     return render(request, 'greetings.html')
+
+def registration(request):
+    if request.method == 'POST':
+        username = request.POST["username"]
+        password = request.POST['password']
+        user = User.objects.create_user(username=username,password=password)
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Пользователь с таким именем уже существует. Пожалуйста, выбирите другое имя.")
+        login(request, user)
+        return redirect('greeting')
+    return render(request, 'registration.html')
+
 
 
 def logout_view(request):

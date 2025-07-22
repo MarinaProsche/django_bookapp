@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block title %}Добро пожаловать!{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="title-text text-center mt-1 mb-2">ИНТЕРАКТИВНАЯ КНИГА-ВСЕЛЕННАЯ</h1>
+        <div class="image-container">
+            <img src="{% static 'images/greetings.jpg' %}"
+                 class="img-fluid small-image d-block mx-auto {% if user.is_authenticated %}opacity-100{% else %}opacity-70{% endif %}" 
+                 alt="">
+
+            {% if not user.is_authenticated %}
+            <div class="form-overlay">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Войти в приложение:</label>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Имя пользователя" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label"></label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-lavender w-100">Войти</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
