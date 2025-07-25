@@ -17,7 +17,7 @@
                 <form method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="username" class="form-label">Пожалуйста, зарегистрируйтесь:</label>
+                        <label for="username" class="form-label">Пожалуйста, придумайте имя и пароль:</label>
                         <input type="text" id="username" name="username" class="form-control" placeholder="Имя пользователя" required>
                     </div>
 
@@ -26,7 +26,9 @@
                         <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required>
                     </div>
 
-                    <button type="submit" class="btn btn-lavender w-100">Войти</button>
+                    <button type="submit" class="btn btn-lavender w-100">Регистрация</button>
+                    <p></p>
+                    <a href="/" style="color: rgb(120, 64, 134); text-decoration: underline; cursor: pointer;">Войти</a>
                 </form>
             </div>
             {% endif %}
