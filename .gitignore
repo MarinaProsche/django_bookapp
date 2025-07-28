@@ -1,0 +1,3 @@
+venv_for_book/
+app_for_book/project_book/__pycache__/
+*.sqlite3
