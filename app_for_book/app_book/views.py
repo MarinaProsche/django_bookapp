@@ -151,3 +151,10 @@ def map(request):
         'locations_json': json.dumps(list(locations)),
         'key': settings.GOOGLE_API_KEY
     })
+
+
+def instruction(request):
+    return render(request, 'instruction.html')
+
+def how_to_read(request):
+    return render(request, 'how_to_read.html')

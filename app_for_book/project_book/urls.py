@@ -20,7 +20,9 @@ urlpatterns = [
     path('map/', views.map, name='map'),
     path('postcard/<int:target_buzzword>/', views.single_postcard, name='single_postcard'),
     path('registration/', views.registration, name='registration'),
+    path('instruction/', views.instruction, name='instruction'),
     path('', include('pwa.urls')),
+    path('how_to_read/', views.how_to_read, name='read'),
 
 
     re_path(r'^manifest\.json$', pwa_views.manifest, name='manifest'),
