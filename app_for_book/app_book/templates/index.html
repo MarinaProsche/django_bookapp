@@ -15,7 +15,7 @@
 <div class="container py-3">
     {% if user.is_authenticated %}
     <div class="d-flex justify-content-end mb-2 mt-2 gap-2">
-        <a href="{% url 'greeting' %}" class="btn btn-lavender">На главную</a>
+        <a href="{% url 'greeting' %}" class="btn btn-lavender">В начало</a>
         <a href="{% url 'logout' %}" class="btn btn-lavender">Выйти</a>
     </div>
     {% endif %}
