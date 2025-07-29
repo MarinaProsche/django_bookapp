@@ -1,0 +1,34 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% block title %}Как читать{% endblock %}
+{% block content %}
+
+<h1 class="title-text text-center"></h1>
+<div class="image-container">
+    <div class="regular-text">Чтобы оказаться рядом с героями и посмотреть на мир их глазами, просто нажмите на выделенное слово</div>
+
+    <div class="images-row">
+        <img src="{% static 'images/to_home_screen' %}" class="tiny-image" alt="">
+        <img src="{% static 'images/to_home_screen2' %}" class="tiny-image" alt="">
+    </div>
+
+
+<h1 class="title-text text-center">Приятного путешествия!</h1>
+
+    <div class="regular-text">откройте "меню", нажав на три точки</div>
+    <div class="regular-text">выберите "Добавить на главный экран" 
+        <p>или "Создать ярлык"</p>
+    </div>
+
+    <div class="images-row">
+        <img src="{% static 'images/to_home_screen' %}" class="tiny-image" alt="">
+        <img src="{% static 'images/to_home_screen2' %}" class="tiny-image" alt="">
+    </div>
+    <br>
+    <a href="{% url 'heads' %}" class="btn btn-lavender w-100">В путь</a>
+    
+</div>
+
+{% endblock %}
