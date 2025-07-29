@@ -9,11 +9,15 @@ class BuzzWordAdmin(admin.ModelAdmin):
 
 @admin.register(Text)
 class TextAdmin(admin.ModelAdmin):
-    list_display = ('chapter_number', 'title_current_city', 'title_current_city_coord', 'title_home_city', 'main_text', 'buzzwords', 'chapter_cover')
+    list_display = ('chapter_number', 'title_current_city', 'title_current_city_coord', 'title_home_city', 'main_text', 'buzzwords', 'chapter_cover', 'bookmark')
 
 
     def buzzwords(self, obj):
         return ', '.join([buzzword.buzzword for buzzword in obj.buzzword_names.all()])
+    
+    def bookmark(self, obj):
+        return obj.has_bookmark
+    bookmark.boolean = True
     
     buzzwords.short_description = 'Buzzwords'
 

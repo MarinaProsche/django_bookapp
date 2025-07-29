@@ -13,7 +13,7 @@ def convert_drive_link(link):
     match = re.search(r'/d/([^/]+)/', link)
     if match:
         file_id = match.group(1)
-        return f"https://drive.google.com/thumbnail?id={file_id}"
+        return f"https://drive.google.com/thumbnail?id={file_id}&s=150"
     return link
 
 class Command(BaseCommand):

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-{% include 'index.html' %}
-<html>
+{% extends 'index.html' %}
+{% load static %}
 
-<head>
-    <title>Оглавление</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
 
-<body>
+{% block title %}Оглавление{% endblock %}
+{% block extra_head %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+{% block content %}
+
     <div class="container py-3">
         <h1 class="text-center mb-4">Оглавление</h1>
         <input type="text" id="search-input" class="form-control mb-3" placeholder="Поиск...">
@@ -19,9 +20,17 @@
                         <td>
                             <a href="{% url 'chapter' text.pk %}" class="all-chapters">
                                 <strong>{{ text.title_current_city }}</strong>
+                                {% if text.has_bookmark %}
+                                
+                                <div class="tiny-text">
+                                    <img src="{% static 'icons/bookmark_full.svg' %}" class="icon-tiny">
+                                    Вы остановились здесь</div>
+                                {% else %}
                                 {% if text.title_home_city %}
                                 <div class="text-muted">→ {{ text.get_title_home_city_display }}</div>
                                 {% endif %}
+                                {% endif %}
+                                
                             </a>
                         </td>
                         <td class="text-end">
@@ -38,7 +47,8 @@
             </table>
         </div>
     </div>
-
+    {% endblock %}
+    {% block extra_js %}
     <script>
         $(document).ready(function () {
             $('#search-input').on('input', function () {
@@ -77,7 +87,4 @@
             });
         });
     </script>
-
-</body>
-
-</html>
+        {% endblock %}
