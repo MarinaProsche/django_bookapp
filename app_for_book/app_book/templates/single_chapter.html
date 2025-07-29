@@ -63,22 +63,30 @@
         function openModal(imageUrl, buzzwordId, event) {
             let modal = document.getElementById("imageModal");
 
-            // image
-            document.getElementById("modalImage").src = imageUrl;
-
             // link
             document.getElementById("modalButton").href = `/postcard/${buzzwordId}`;
 
             // get word's coords
-            let x = event.clientX;
-            let y = event.clientY;
+            let rect = event.target.getBoundingClientRect();
 
-            // set window's coord
-            modal.style.left = `${x}px`;
-            modal.style.top = `${y}px`;
+            let imgPhoto = document.getElementById("modalImage");
+            imgPhoto.onload = function() {
+                let x = rect.left + window.scrollX;
+                let y = rect.bottom + window.scrollY;
 
+                let naturalWidth = imgPhoto.naturalWidth;
 
-            modal.style.display = "block";
+                if (x + naturalWidth > document.body.clientWidth) {
+                    x = document.body.clientWidth - naturalWidth;
+                }
+
+                modal.style.left = `${x}px`;
+                modal.style.top = `${y}px`;
+
+                modal.style.display = "block";
+            }
+            imgPhoto.src = imageUrl;
+
         }
 
         function closeModal() {
