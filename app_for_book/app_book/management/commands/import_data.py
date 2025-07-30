@@ -7,6 +7,8 @@ from app_book.models import Text, BuzzWord, MediaFile
 
 WAY_TO_DATA = os.path.join(settings.BASE_DIR, 'Bookapp.json')
 
+#YOU HAVE TO DELETE db.sqlite file before change something!!!!!!
+
 class Command(BaseCommand):
     help = 'Import from json'
 
