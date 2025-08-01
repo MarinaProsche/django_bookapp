@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 if buzzword:
                     linked_file = MediaFile.objects.create(
                         file='example.jpg',
-                        file_name = 'to be changed',
+                        file_name = buzzword,
                         file_type = 'image')
                     self.add_buzzwords_to_base(buzzword=buzzword, linked_file=linked_file, text_obj=text_obj)
 

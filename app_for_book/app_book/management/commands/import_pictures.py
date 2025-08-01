@@ -9,12 +9,12 @@ from django.core.management.base import BaseCommand
 from app_book.models import Text, BuzzWord, MediaFile
 import re
 
-def convert_drive_link(link):
-    match = re.search(r'/d/([^/]+)/', link)
-    if match:
-        file_id = match.group(1)
-        return f"https://drive.google.com/thumbnail?id={file_id}"
-    return link
+# def convert_drive_link(link):
+#     match = re.search(r'/d/([^/]+)/', link)
+#     if match:
+#         file_id = match.group(1)
+#         return f"https://drive.google.com/thumbnail?id={file_id}"
+#     return link
 
 
 WAY_TO_DATA = os.path.join(settings.BASE_DIR, 'Bookapp.json')
@@ -28,10 +28,10 @@ class Command(BaseCommand):
 
         for chapter in data:
             number = chapter.get('number', '')
-            pictures = [chapter.get('картинки I'),
-                       chapter.get('картинки-2 I'),
-                       chapter.get('картинки-3 I'),
-                       chapter.get('картинки-4')                       
+            pictures = [chapter.get('picture-1'),
+                       chapter.get('picture-2'),
+                       chapter.get('picture-3'),
+                    #    chapter.get('картинки-4')
                        ]
 
             pictures = [picture for picture in pictures if picture]
@@ -41,6 +41,6 @@ class Command(BaseCommand):
 
                 for buzzword, picture in zip(current_buzzwords, pictures):
                     if picture:
-                        buzzword.linked_file.file = convert_drive_link(picture)
+                        buzzword.linked_file.file = picture
                         buzzword.linked_file.save()
         self.stdout.write(self.style.SUCCESS('SUCCESS'))

@@ -20,6 +20,6 @@ def replace(text, buzzwords):
         pattern = rf'(?i)(?<!\w){re.escape(buzzword.buzzword)}(?!\w|\.)'
         def replace_case(match):
             matched_text = match.group(0)
-            return f"<span class='buzzword' onclick=\"openModal('{buzzword.linked_file.file}', '{buzzword.id}', event)\">{matched_text}</span>"
+            return f"<span class='buzzword' onclick=\"openModal('{buzzword.linked_file.file.url}', '{buzzword.id}', event)\">{matched_text}</span>"
         text = re.sub(pattern, replace_case, text)
     return text

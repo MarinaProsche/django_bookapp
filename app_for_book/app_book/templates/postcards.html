@@ -30,7 +30,7 @@
                         </button>
                     </form>
                     <!-- Image -->
-                    <img src="{{ postcard.linked_file.file }}" alt="{{ postcard.linked_file.file_name }}"
+                    <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}"
                         class="card-img-top fixed-size-image">
                     <div class="card-body">
                         <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>

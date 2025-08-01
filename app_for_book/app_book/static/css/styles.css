@@ -209,16 +209,35 @@ body {
     object-fit: contain;
 }
 
+.modal-content video {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
 .modal-button {
     position: absolute;
     bottom: 10px;
     right: 10px;
+    width: 30px;
+    height: 30px;
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
     border-radius: 5px;
-    text-decoration: none;
-    font-size: 14px;
-    color: black;
+    background-image: url("/static/icons/maximize.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.modal-button img {
+    display: none;
+}
+
+.icon-wild {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .modal-button:hover {
@@ -241,7 +260,7 @@ body {
     filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-.icon-wild{
+/* .icon-wild{
     width: 1rem;
     height: 1rem;
-}
+} */

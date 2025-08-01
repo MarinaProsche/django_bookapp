@@ -113,7 +113,7 @@ def postcards(request):
 @login_required
 def single_postcard(request, target_buzzword):
     postcard = BuzzWord.objects.get(id=target_buzzword)
-    file_id = str(postcard.linked_file.file)
+    file_id = str(postcard.linked_file.file.url)
     match = re.search(r"id=([\w-]+)", file_id)
     if match:
         file_id_tr = match.group(1)
