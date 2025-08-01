@@ -3,15 +3,15 @@
 <html>
 
 <head>
-    <title>Оглавление</title>
+    <title>Стена с открытками</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
 <body>
     <div class="container py-3">
-        <h1 class="text-center mb-4">Wall of postcards</h1>
-        <div class="row row-cols-1 row-cols-md-2 g-4">
+        <h1 class="text-center mb-4">Стена с открытками</h1>
+        <div class="row row-cols-2 row-cols-lg-3 g-2">
             {% for postcard in postcards %}
             <div class="col">
                 <div class="card position-relative">
@@ -34,11 +34,11 @@
                         class="card-img-top fixed-size-image">
                     <div class="card-body">
                         <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
-                        {% if postcard.text.title_home_city %}
+                        <!-- {% if postcard.text.title_home_city %}
                         <p class="card-text text-muted">→ {{ postcard.text.get_title_home_city_display }}</p>
-                        {% endif %}
-                        <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-primary">К открытке</a>
-                        <a href="{% url 'single_postcard' postcard.pk %}" class="btn btn-primary">открыть</a>
+                        {% endif %} -->
+                        <!-- <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-primary">К открытке</a>
+                        <a href="{% url 'single_postcard' postcard.pk %}" class="btn btn-primary">открыть</a> -->
                     </div>
                 </div>
             </div>
