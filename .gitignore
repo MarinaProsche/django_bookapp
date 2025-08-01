@@ -2,3 +2,7 @@ venv_for_book/
 app_for_book/project_book/__pycache__/
 *.sqlite3
 *__pycache__
+__pycache__/
+*.pyc
+app_for_book/app_book/management/commands/__pycache__/
+app_for_book/app_book/static/images/pictures_for_buzzwords/
