@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from app_book.models import Text, BuzzWord, MediaFile
 import re
+from django.core.files import File
 
 # def convert_drive_link(link):
 #     match = re.search(r'/d/([^/]+)/', link)
@@ -38,9 +39,20 @@ class Command(BaseCommand):
             current_buzzwords = BuzzWord.objects.filter(text__chapter_number=number)
 
             if current_buzzwords.exists():
-
                 for buzzword, picture in zip(current_buzzwords, pictures):
                     if picture:
-                        buzzword.linked_file.file = picture
-                        buzzword.linked_file.save()
+                        file_path = os.path.join(settings.MEDIA_ROOT, picture)
+                        if os.path.exists(file_path):
+                            with open(file_path, 'rb') as f:
+                                file_obj = File(f)
+                                file_name_without_ext = os.path.splitext(os.path.basename(file_path))[0]
+                                ext = os.path.splitext(file_path)[1].lower()
+                                file_type = "video" if ext == ".mp4" else "image"
+                                linked_file = buzzword.linked_file
+                                linked_file.file.save(os.path.basename(file_path), file_obj, save=False)
+
+                                linked_file.file_name = file_name_without_ext
+                                linked_file.file_type = file_type
+
+                                linked_file.save()
         self.stdout.write(self.style.SUCCESS('SUCCESS'))

@@ -24,14 +24,24 @@
                             <img src="{% static 'icons/heart_full.png' %}" alt="Remove from Favorites"
                                 class="icon-heart">
                             {% else %}
-                            <img src="{% static 'icons/heart_empty.png' %}" alt="Add to Favorites" class="icon-heart"
-                                >
+                            <img src="{% static 'icons/heart_empty.png' %}" alt="Add to Favorites" class="icon-heart">
                             {% endif %}
                         </button>
                     </form>
-                    <!-- Image -->
-                    <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}"
-                        class="card-img-top fixed-size-image">
+                    <!-- Image or video checking-->
+                    <a href="{% url 'single_postcard' postcard.pk %}">
+                        {% if postcard.linked_file.file_type == 'video' %}
+                        <div class="video-preview-wrapper">
+                            <img src="{% static 'images/pictures_for_buzzwords/screens_for_video/' %}{{ postcard.linked_file.file_name }}.png"
+                                 class="card-img-top fixed-size-image">
+
+                            <img src="{% static 'icons/video-preview-icon.png' %}" alt="Видео" class="video-preview-icon">
+                        </div>
+                        {% else %}
+                        <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}"
+                            class="card-img-top fixed-size-image">
+                        {% endif %}
+                    </a>
                     <div class="card-body">
                         <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
                         <!-- {% if postcard.text.title_home_city %}
