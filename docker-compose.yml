@@ -7,7 +7,7 @@ services:
     command: gunicorn project_book.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/app/app_for_book/staticfiles
-      - media_volume:/app/media
+      - media_volume:/app/app_for_book/app_book/static/images/pictures_for_buzzwords
       - ./app_for_book/db.sqlite3:/app/app_for_book/db.sqlite3
     expose:
       - 8000
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - static_volume:/app/app_for_book/staticfiles
-      - media_volume:/app/media
+      - media_volume:/app/app_for_book/app_book/static/images/pictures_for_buzzwords
     depends_on:
       - web
 

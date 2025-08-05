@@ -138,6 +138,7 @@ MEDIA_URL = '/media/'
 # MEDIA_URL = 'app_book/static/images/pictures_for_buzzwords/'
 
 MEDIA_ROOT = BASE_DIR / 'app_book/static/images/pictures_for_buzzwords'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
