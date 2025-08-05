@@ -10,7 +10,8 @@
 
 <body>
     <div class="container py-3">
-        <h1 class="text-center mb-4">Стена с открытками</h1>
+        <h1 class="text-center no-margin-bottom">Стена с открытками</h1>
+        <p class="regular-text" > (нажмите, чтобы открыть)</p>
         <div class="row row-cols-2 row-cols-lg-3 g-2">
             {% for postcard in postcards %}
             <div class="col">
@@ -44,11 +45,6 @@
                     </a>
                     <div class="card-body">
                         <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
-                        <!-- {% if postcard.text.title_home_city %}
-                        <p class="card-text text-muted">→ {{ postcard.text.get_title_home_city_display }}</p>
-                        {% endif %} -->
-                        <!-- <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-primary">К открытке</a>
-                        <a href="{% url 'single_postcard' postcard.pk %}" class="btn btn-primary">открыть</a> -->
                     </div>
                 </div>
             </div>
