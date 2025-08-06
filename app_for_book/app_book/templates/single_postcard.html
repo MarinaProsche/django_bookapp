@@ -7,26 +7,29 @@
 <body>
     <div class="container py-3">
         <div class="media-wrapper">
-            {% if postcard.linked_file.file_type == 'video' %}
-            <video class="responsive-media" controls>
-                <source src="{{ file_id }}" type="video/mp4">
-                Ваш браузер не поддерживает видео.
-            </video>
-            {% else %}
-            <img src="{{ file_id }}" alt="Медиа" class="responsive-media">
-            {% endif %}
+            <div>
+                {% if postcard.linked_file.file_type == 'video' %}
+                <video class="responsive-media" controls>
+                    <source src="{{ file_id }}" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+                {% else %}
+                <img src="{{ file_id }}" alt="Медиа" class="responsive-media">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
+                </div>
+                {% if postcard.text.title_home_city %}
+                <p class="card-text text-muted">→ {{ postcard.text.get_title_home_city_display }}</p>
+                {% endif %}
+                <div class="d-flex flex-column align-items-left mb-2 mt-2 gap-3">
+                    <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-lavender">к тексту открытки ⟶ </a>
+                    <a href="{% url 'single_postcard' postcard.pk %}" class="btn btn-lavender" style="display: block;">найти на
+                        карте ⟶ </a>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
-        </div>
-        {% if postcard.text.title_home_city %}
-        <p class="card-text text-muted">→ {{ postcard.text.get_title_home_city_display }}</p>
-        {% endif %}
-        <div class="d-flex flex-column align-items-left mb-2 mt-2 gap-3">
-            <a href="{% url 'chapter' postcard.text.pk %}" class="btn btn-lavender">к тексту открытки ⟶ </a>
-            <a href="{% url 'single_postcard' postcard.pk %}" class="btn btn-lavender" style="display: block;">найти на
-                карте ⟶ </a>
-        </div>
+
     </div>
 </body>
 

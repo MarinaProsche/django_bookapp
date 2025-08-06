@@ -7,29 +7,29 @@
 
 <h1 class="title-text text-center">Сохранить на iphone:</h1>
 <div class="image-container">
-    <div class="regular-text">внизу экрана выберите значок "поделиться"</div>
-    <div class="regular-text">а затем "На экран домой". Нажмите "Добавить"</div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-5 col-md-9">
+            <div class="regular-text">внизу экрана выберите значок "поделиться"</div>
+            <div class="regular-text">а затем "На экран домой". Нажмите "Добавить"</div>
 
-    <div class="images-row">
-        <img src="{% static 'images/to_home_screen' %}" class="tiny-image" alt="">
-        <img src="{% static 'images/to_home_screen2' %}" class="tiny-image" alt="">
+            <div class="images-row">
+                <img src="{% static 'images/to_home_screen' %}" class="tiny-image" alt="">
+                <img src="{% static 'images/to_home_screen2' %}" class="tiny-image" alt="">
+            </div>
+            <h1 class="title-text text-center">Сохранить на android:</h1>
+
+            <div class="regular-text">откройте "меню", нажав на три точки</div>
+            <div class="regular-text">выберите "Добавить на главный экран"
+                <p>или "Создать ярлык"</p>
+            </div>
+            <div class="images-row">
+                <img src="{% static 'images/to_home_screen' %}" class="tiny-image" alt="">
+                <img src="{% static 'images/to_home_screen2' %}" class="tiny-image" alt="">
+            </div>
+            <br>
+            <a href="{% url 'read' %}" class="btn btn-lavender w-100">последнее напутствие</a>
+        </div>
     </div>
-
-
-<h1 class="title-text text-center">Сохранить на android:</h1>
-
-    <div class="regular-text">откройте "меню", нажав на три точки</div>
-    <div class="regular-text">выберите "Добавить на главный экран" 
-        <p>или "Создать ярлык"</p>
-    </div>
-
-    <div class="images-row">
-        <img src="{% static 'images/to_home_screen' %}" class="tiny-image" alt="">
-        <img src="{% static 'images/to_home_screen2' %}" class="tiny-image" alt="">
-    </div>
-    <br>
-    <a href="{% url 'read' %}" class="btn btn-lavender w-100">последнее напутствие</a>
-    
 </div>
 
 {% endblock %}
