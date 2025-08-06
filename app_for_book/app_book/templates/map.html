@@ -59,22 +59,20 @@
                     title: location.title_current_city
                 });
 
-                // images creating
-                const imagesHTML = (location.images || [])
-                    .map(img => `<img src="${img}" style="width:100%; border-radius:5px; margin-bottom:5px;">`)
-                    .join('');
-
-                // links creating
-                const linksHTML = (location.urls || [])
-                    .map((link, index) => `<p><a href="${link}" target="_blank">Открыть ${index + 1}</a></p>`)
+                // picture+link
+                const itemsHTML = (location.items || [])
+                    .map(item => `
+                        <div style="margin-bottom:5px;">
+                            ${item.img ? `<img src="${item.img}" style="max-width:80%; height:auto; display:block; border-radius:5px; margin:0 auto;">` : ''}
+                            <p><a href="${item.url}" target="_blank">Открыть</a></p>
+                        </div>
+                    `)
                     .join('');
 
                 const infoWindow = new google.maps.InfoWindow({
                     content: `
                         <div style="width:150px; font-size:14px;">
-                            <p><strong>${location.title_current_city}</strong></p>
-                            ${imagesHTML || '<p><em>Нет изображений</em></p>'}
-                            ${linksHTML || '<p><em>Нет ссылок</em></p>'}
+                            ${itemsHTML || '<p><em>Нет данных</em></p>'}
                         </div>
                     `
                 });
@@ -86,6 +84,6 @@
                 });
             });
         }
-    </script>
+        </script>
 </body>
 </html>

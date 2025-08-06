@@ -1,5 +1,6 @@
 import json
 import re
+from collections import defaultdict
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Exists, OuterRef
@@ -8,6 +9,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 from .models import Text, BuzzWord, Bookmarks, MediaFile, Favorites
 
@@ -153,31 +156,42 @@ def favorites(request):
 #         'key': settings.GOOGLE_API_KEY
 #     })
 
-from django.core.serializers.json import DjangoJSONEncoder
 def map(request):
-    locations = []
+    grouped_locations = defaultdict(lambda: {
+        'title_current_city': '',
+        'items': [],  # здесь будут объекты {img, url}
+    })
+
     for text in Text.objects.all():
-        media_files = MediaFile.objects.filter(
-            buzzword__text=text,
-            # file_type='image'
-        ).values_list('file', flat=True)
+        coord = text.title_current_city_coord
+        grouped_locations[coord]['title_current_city'] = text.title_current_city
         buzzwords = text.buzzword_names.all()
-        buzzword_links = [f"/postcard/{bw.id}/" for bw in buzzwords]
+        # links+ing for buzzwords
+        for bw in buzzwords:
+            media_files = MediaFile.objects.filter(
+                buzzword=bw
+            ).values_list('file', flat=True)
 
-        locations.append({
-            'pk': text.pk,
-            'chapter_number': text.chapter_number,
-            'title_current_city': text.title_current_city,
-            'title_current_city_coord': text.title_current_city_coord,
-            # 'url': f"/postcard/{text.buzzword_names.id}/",
-            'urls': buzzword_links,
-            'images': [f"/media/{img}" for img in media_files if img],
-        })
+            for img in media_files:
+                grouped_locations[coord]['items'].append({
+                    'img': f"/media/{img}" if img else None,
+                    'url': f"/postcard/{bw.id}/"
+                })
 
+    # based on locations
+    locations = [
+        {
+            'title_current_city_coord': coord,
+            'title_current_city': data['title_current_city'],
+            'items': data['items']
+        }
+        for coord, data in grouped_locations.items()
+    ]
     return render(request, 'map.html', {
         'locations_json': json.dumps(locations, cls=DjangoJSONEncoder),
         'key': settings.GOOGLE_API_KEY
     })
+
 
 def instruction(request):
     return render(request, 'instruction.html')
