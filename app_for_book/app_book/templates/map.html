@@ -19,47 +19,73 @@
             margin: 0;
             padding: 0;
         }
+
+        a {
+        outline: none;                /* deletes outline */
+        -webkit-tap-highlight-color: transparent;
+        text-decoration: none;        /* deletes underline */
+    }
+
+    a:focus, a:active {
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
     </style>
 </head>
 
 <body>
+    <h1 class="text-center no-margin-bottom">Маршруты героев</h1>
+    <p class="regular-text" > (нажмите, чтобы открыть 📍)</p>
 
     <div id="map"></div>
-
     <script>
-function initMap() {
-    const map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 50.1136, lng: 8.6785 },
-        zoom: 4,
-        mapId: "DEMO_MAP_ID"
-    });
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 50.1136, lng: 8.6785 },
+                zoom: 4,
+                mapId: "DEMO_MAP_ID"
+            });
 
-    const locations = {{ locations_json|safe }};
+            const locations = {{ locations_json|safe }};
+            let currentInfoWindow = null;
 
-    locations.forEach(location => {
-        const marker = new google.maps.Marker({
-            position: {
-                lat: parseFloat(location.title_current_city_coord.split(',')[0]),
-                lng: parseFloat(location.title_current_city_coord.split(',')[1])
-            },
-            map,
-            title: location.title_current_city
-        });
+            locations.forEach(location => {
+                const marker = new google.maps.Marker({
+                    position: {
+                        lat: parseFloat(location.title_current_city_coord.split(',')[0]),
+                        lng: parseFloat(location.title_current_city_coord.split(',')[1])
+                    },
+                    map,
+                    title: location.title_current_city
+                });
 
-        const infoWindow = new google.maps.InfoWindow({
-            content: `<div>
-                        <p><strong>${location.title_current_city}</strong></p>
-                        <p><a href="${location.url}" target="_blank">Go to postcard</a></p>
-                      </div>`
-        });
+                // images creating
+                const imagesHTML = (location.images || [])
+                    .map(img => `<img src="${img}" style="width:100%; border-radius:5px; margin-bottom:5px;">`)
+                    .join('');
 
-        marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-        });
-    });
-}
+                // links creating
+                const linksHTML = (location.urls || [])
+                    .map((link, index) => `<p><a href="${link}" target="_blank">Открыть ${index + 1}</a></p>`)
+                    .join('');
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="width:150px; font-size:14px;">
+                            <p><strong>${location.title_current_city}</strong></p>
+                            ${imagesHTML || '<p><em>Нет изображений</em></p>'}
+                            ${linksHTML || '<p><em>Нет ссылок</em></p>'}
+                        </div>
+                    `
+                });
+
+                marker.addListener('click', () => {
+                    if (currentInfoWindow) currentInfoWindow.close();
+                    infoWindow.open(map, marker);
+                    currentInfoWindow = infoWindow;
+                });
+            });
+        }
     </script>
-
-
 </body>
 </html>

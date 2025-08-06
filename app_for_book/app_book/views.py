@@ -138,20 +138,46 @@ def favorites(request):
     favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
     return render(request, 'favorites.html', {'favorites': favorites})
 
+# def map(request):
+#     locations = Text.objects.all().values(
+#         'pk',
+#         'title_current_city',
+#         'title_current_city_coord',
+#         'chapter_cover'
+#     )
+#     for location in locations:
+#         location['url'] = f"/postcard/{location['pk']}/"
+
+#     return render(request, 'map.html', {
+#         'locations_json': json.dumps(list(locations)),
+#         'key': settings.GOOGLE_API_KEY
+#     })
+
+from django.core.serializers.json import DjangoJSONEncoder
 def map(request):
-    locations = Text.objects.all().values(
-        'pk',
-        'title_current_city',
-        'title_current_city_coord'
-    )
-    for location in locations:
-        location['url'] = f"/chapters/{location['pk']}/"
+    locations = []
+    for text in Text.objects.all():
+        media_files = MediaFile.objects.filter(
+            buzzword__text=text,
+            # file_type='image'
+        ).values_list('file', flat=True)
+        buzzwords = text.buzzword_names.all()
+        buzzword_links = [f"/postcard/{bw.id}/" for bw in buzzwords]
+
+        locations.append({
+            'pk': text.pk,
+            'chapter_number': text.chapter_number,
+            'title_current_city': text.title_current_city,
+            'title_current_city_coord': text.title_current_city_coord,
+            # 'url': f"/postcard/{text.buzzword_names.id}/",
+            'urls': buzzword_links,
+            'images': [f"/media/{img}" for img in media_files if img],
+        })
 
     return render(request, 'map.html', {
-        'locations_json': json.dumps(list(locations)),
+        'locations_json': json.dumps(locations, cls=DjangoJSONEncoder),
         'key': settings.GOOGLE_API_KEY
     })
-
 
 def instruction(request):
     return render(request, 'instruction.html')
