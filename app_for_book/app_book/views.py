@@ -1,5 +1,6 @@
 import json
 import re
+import os
 from collections import defaultdict
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -159,22 +160,25 @@ def favorites(request):
 def map(request):
     grouped_locations = defaultdict(lambda: {
         'title_current_city': '',
-        'items': [],  # здесь будут объекты {img, url}
+        'items': [],  # ---> {img, url}
     })
 
     for text in Text.objects.all():
         coord = text.title_current_city_coord
         grouped_locations[coord]['title_current_city'] = text.title_current_city
         buzzwords = text.buzzword_names.all()
-        # links+ing for buzzwords
+        # links+img for buzzwords
         for bw in buzzwords:
             media_files = MediaFile.objects.filter(
                 buzzword=bw
             ).values_list('file', flat=True)
 
             for img in media_files:
+                filename = os.path.basename(img) #it is for video! we need to find screen for it
                 grouped_locations[coord]['items'].append({
-                    'img': f"/media/{img}" if img else None,
+                    'img': f"/media/{filename}" if img.endswith('jpg') \
+                        else f"/media/screens_for_video/{os.path.splitext(filename)[0]}.png" if img.endswith('mp4') \
+                            else None,
                     'url': f"/postcard/{bw.id}/"
                 })
 
