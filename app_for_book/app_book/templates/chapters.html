@@ -20,7 +20,7 @@
                         <td>
                             <a href="{% url 'chapter' text.pk %}" class="all-chapters">
                                 <strong>{{ text.title_current_city }}</strong>
-                                {% if text.has_bookmark %}
+                                {% if text.first_page %}
                                 
                                 <div class="tiny-text">
                                     <img src="{% static 'icons/bookmark_full.svg' %}" class="icon-tiny">

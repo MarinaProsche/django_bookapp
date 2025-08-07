@@ -5,33 +5,50 @@
 {% block title %}Добро пожаловать!{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1 class="title-text text-center mt-1 mb-2">ИНТЕРАКТИВНАЯ КНИГА-ВСЕЛЕННАЯ</h1>
-        <div class="image-container">
-            <img src="{% static 'images/greetings.jpg' %}"
-                 class="img-fluid small-image d-block mx-auto {% if user.is_authenticated %}opacity-100{% else %}opacity-70{% endif %}" 
-                 alt="">
+<div class="container-fluid p-0">
+    <h1 class="title-text text-center mt-1 mb-2">ИНТЕРАКТИВНАЯ КНИГА-ВСЕЛЕННАЯ</h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-5 col-md-9">
+            <div class="image-container">
+                <img src="{% static 'images/greetings.jpg' %}"
+                    class="img-fluid small-image d-block mx-auto {% if user.is_authenticated %}opacity-100{% else %}opacity-70{% endif %}"
+                    alt="">
 
-            {% if not user.is_authenticated %}
-            <div class="form-overlay">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Пожалуйста, придумайте имя и пароль:</label>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Имя пользователя" required>
-                    </div>
+                {% if not user.is_authenticated %}
+                <div class="form-overlay">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Пожалуйста, придумайте имя и пароль:</label>
+                            <input type="text" id="username" name="username" class="form-control"
+                                placeholder="Имя пользователя" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label"></label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required>
-                    </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label"></label>
+                            <input type="password" id="password" name="password" class="form-control"
+                                placeholder="Пароль" required>
+                        </div>
 
-                    <button type="submit" class="btn btn-lavender w-100">Регистрация</button>
-                    <p></p>
-                    <a href="/" style="color: rgb(120, 64, 134); text-decoration: underline; cursor: pointer;">Войти</a>
-                </form>
+                        <button type="submit" class="btn btn-lavender w-100">Регистрация</button>
+                        <div class="text-center mt-2">или</div>
+                        <div class="text-center">
+                            <a href="{% url 'greeting' %}"
+                                style="color: rgb(120, 64, 134); text-decoration: underline; cursor: pointer;">Войти</a>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                <div class="regular-text">
+                    Пожалуйста, для удобного чтения сохраните приложение на экран.
+                    Как это сделать можно посмотреть в
+                    <a href="/instruction"
+                        style="color: rgb(120, 64, 134); text-decoration: underline; cursor: pointer;">
+                        инструкции
+                    </a>
+                </div>
             </div>
-            {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}

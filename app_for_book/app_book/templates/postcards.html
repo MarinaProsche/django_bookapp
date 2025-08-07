@@ -11,13 +11,13 @@
 <body>
     <div class="container py-3">
         <h1 class="text-center no-margin-bottom">Стена с открытками</h1>
-        <p class="regular-text" > (нажмите, чтобы открыть)</p>
+        <p class="regular-text" style="text-align: left; padding-bottom: 10px;" > <i>* нажмите, чтобы открыть</i></p>
         <div class="row row-cols-2 row-cols-lg-3 g-2">
             {% for postcard in postcards %}
             <div class="col">
                 <div class="card position-relative">
                     <!--favorite -->
-                    <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}"
+                    <!-- <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}"
                         class="position-absolute top-0 end-0 m-2">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-link p-0 border-0">
@@ -28,7 +28,7 @@
                             <img src="{% static 'icons/heart_empty.png' %}" alt="Add to Favorites" class="icon-heart">
                             {% endif %}
                         </button>
-                    </form>
+                    </form> -->
                     <!-- Image or video checking-->
                     <a href="{% url 'single_postcard' postcard.pk %}">
                         {% if postcard.linked_file.file_type == 'video' %}

@@ -45,6 +45,14 @@
             </a>
             {% endif %}
         </div>
+        {% if text.pk == 1 %}
+        <p class="regular-text" style="text-align: left; padding-bottom: 10px;">
+            <i>
+            <br>_______________
+            <br>* Здесь и далее:
+            <br>Чтобы оказаться рядом с героями и посмотреть на мир их глазами, нажмите на выделенное слово.
+            <br>Нажмите на стрелочки, чтобы открыть шире (прим. авт.).</i></p>
+            {% endif %}
     </div>
 
     <!-- Open images and video -->
@@ -57,9 +65,6 @@
             </a>
         </div>
     </div>
-    <style>
-
-    </style>
 
     <script>function openModal(fileUrl, buzzwordId, event) {
             const modal = document.getElementById("imageModal");

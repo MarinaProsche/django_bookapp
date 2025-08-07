@@ -26,31 +26,35 @@ def greeting(request):
             login(request, user)
             return redirect('greeting')
         else:
-            messages.error(request, 'Error')
+            messages.error(request, 'Неверное имя или пароль, попробуйте снова или зарегестрируйтесь.')
     return render(request, 'greetings.html')
 
 def registration(request):
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST['password']
-        user = User.objects.create_user(username=username,password=password)
         if User.objects.filter(username=username).exists():
             messages.error(request, "Пользователь с таким именем уже существует. Пожалуйста, выбирите другое имя.")
-        login(request, user)
-        return redirect('greeting')
+            # return redirect('registration')
+        else:
+            user = User.objects.create_user(username=username,password=password)
+            login(request, user)
+            return redirect('greeting')
     return render(request, 'registration.html')
-
 
 
 def logout_view(request):
     logout(request)
     return redirect('greeting')
 
-@login_required
+# @login_required
 def heads(request):
-    has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user))
     query = request.GET.get('q', '').strip().lower()
-    texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
+    if request.user.is_authenticated:
+        has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user))
+        texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
+    else:
+        texts = Text.objects.all()
 
     if query:
         texts = [
@@ -76,18 +80,25 @@ def heads(request):
     return render(request, 'chapters.html', {'texts': texts})
 
 
-@login_required
+# @login_required
 def chapter(request, pk):
     chapter_text = get_object_or_404(Text, pk=pk)
     chapter_buzzwords = BuzzWord.objects.filter(text=chapter_text)
-    bookmark = Bookmarks.objects.filter(user=request.user, bookmark=chapter_text).first()
+    if request.user.is_authenticated:
+        bookmark = Bookmarks.objects.filter(user=request.user, bookmark=chapter_text).first()
+    else:
+        bookmark = None
     if request.method == 'POST':
-        if bookmark:
-            bookmark.delete()
+        if request.user.is_authenticated:
+            if bookmark:
+                bookmark.delete()
+            else:
+                Bookmarks.objects.filter(user=request.user).delete()
+                Bookmarks.objects.create(user=request.user, bookmark=chapter_text)
+            return redirect('chapter', pk=pk)
         else:
-            Bookmarks.objects.filter(user=request.user).delete()
-            Bookmarks.objects.create(user=request.user, bookmark=chapter_text)
-        return redirect('chapter', pk=pk)
+            messages.warning(request, "Чтобы добавить закладку, вам надо войти или зарегистрироваться.")
+            # return redirect('greeting')
 
     try:
         next_chapter=Text.objects.get(pk=(pk+1)).pk
@@ -104,17 +115,17 @@ def chapter(request, pk):
                                                    'bookmark': bookmark,
     })
 
-@login_required
+# @login_required
 def postcards(request):
     postcards = BuzzWord.objects.all()
-    favorites = Favorites.objects.filter(user=request.user).values_list('favorites_id', flat=True)
+    # favorites = Favorites.objects.filter(user=request.user).values_list('favorites_id', flat=True)
 
     return render(request, 'postcards.html', {
         'postcards': postcards,
-        'favorites': favorites
+        # 'favorites': favorites
     })
 
-@login_required
+# @login_required
 def single_postcard(request, target_buzzword):
     postcard = BuzzWord.objects.get(id=target_buzzword)
     file_id = str(postcard.linked_file.file.url)
