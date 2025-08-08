@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 import dotenv
+from google.oauth2 import service_account
 
 dotenv.load_dotenv()
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'app_book',
     'pwa',
 ]
@@ -134,10 +136,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-MEDIA_URL = '/media/'
-# MEDIA_URL = 'app_book/static/images/pictures_for_buzzwords/'
+# MEDIA_URL = '/media/'
+# # MEDIA_URL = 'app_book/static/images/pictures_for_buzzwords/'
 
-MEDIA_ROOT = BASE_DIR / 'app_book/static/images/pictures_for_buzzwords'
+# MEDIA_ROOT = BASE_DIR / 'app_book/static/images/pictures_for_buzzwords'
 # MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
@@ -177,3 +179,42 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
+
+
+# bucket storage:
+
+# GS_BUCKET_NAME = os.getenv("GS_BUCKET_NAME")
+
+# # default:
+# DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+
+# # way to json
+# GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+#     os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+# )
+
+# MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+
+GS_BUCKET_NAME = os.getenv("GS_BUCKET_NAME")
+GS_LOCATION = ""
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+)
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": GS_BUCKET_NAME,
+            # "location": GS_LOCATION,   # we don't use it because of upload_to = media_files from models
+            "credentials": GS_CREDENTIALS,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+if GS_LOCATION:
+    MEDIA_URL += f"{GS_LOCATION}/"

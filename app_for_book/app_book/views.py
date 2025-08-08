@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.files.storage import default_storage
 
 
 from .models import Text, BuzzWord, Bookmarks, MediaFile, Favorites
@@ -153,21 +154,6 @@ def favorites(request):
     favorites = Favorites.objects.select_related('favorites').prefetch_related('favorites__buzzword_set__text').all()
     return render(request, 'favorites.html', {'favorites': favorites})
 
-# def map(request):
-#     locations = Text.objects.all().values(
-#         'pk',
-#         'title_current_city',
-#         'title_current_city_coord',
-#         'chapter_cover'
-#     )
-#     for location in locations:
-#         location['url'] = f"/postcard/{location['pk']}/"
-
-#     return render(request, 'map.html', {
-#         'locations_json': json.dumps(list(locations)),
-#         'key': settings.GOOGLE_API_KEY
-#     })
-
 def map(request):
     grouped_locations = defaultdict(lambda: {
         'title_current_city': '',
@@ -180,16 +166,34 @@ def map(request):
         buzzwords = text.buzzword_names.all()
         # links+img for buzzwords
         for bw in buzzwords:
-            media_files = MediaFile.objects.filter(
-                buzzword=bw
-            ).values_list('file', flat=True)
 
-            for img in media_files:
-                filename = os.path.basename(img) #it is for video! we need to find screen for it
+
+            # !  this block is for local using with media folder:
+            # media_files = MediaFile.objects.filter(
+            #     buzzword=bw
+            # ).values_list('file', flat=True)
+            # for img in media_files:
+            #     filename = os.path.basename(img) #it is for video! we need to find screen for it
+            #     grouped_locations[coord]['items'].append({
+            #         'img': f"/media/{filename}" if img.endswith('jpg') \
+            #             else f"/media/screens_for_video/{os.path.splitext(filename)[0]}.png" if img.endswith('mp4') \
+            #                 else None,
+            #         'url': f"/postcard/{bw.id}/"
+            #     })
+
+
+            # !  this block is for container with gcs:
+            media_files = MediaFile.objects.filter(buzzword=bw)
+            for mf in media_files:
+                file_url = mf.file.url if mf.file else None
+
+                # if video:
+                if mf.file and mf.file.name.endswith('mp4'):
+                    filename_no_ext = os.path.splitext(os.path.basename(mf.file.name))[0]
+                    file_url = default_storage.url(f"screens_for_video/{filename_no_ext}.png")
+
                 grouped_locations[coord]['items'].append({
-                    'img': f"/media/{filename}" if img.endswith('jpg') \
-                        else f"/media/screens_for_video/{os.path.splitext(filename)[0]}.png" if img.endswith('mp4') \
-                            else None,
+                    'img': file_url,
                     'url': f"/postcard/{bw.id}/"
                 })
 

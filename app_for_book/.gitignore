@@ -2,3 +2,4 @@
 .env
 Bookapp.json
 Bookapp_map.json
+/secrets/

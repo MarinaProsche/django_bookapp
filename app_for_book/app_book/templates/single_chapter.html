@@ -66,45 +66,36 @@
         </div>
     </div>
 
-    <script>function openModal(fileUrl, buzzwordId, event) {
-            const modal = document.getElementById("imageModal");
-            const modalButton = document.getElementById("modalButton");
-            modalButton.href = `/postcard/${buzzwordId}`;
+    <script>function openModal(fileUrl, buzzwordId, fileType, event) {
+        const modal = document.getElementById("imageModal");
+        const modalButton = document.getElementById("modalButton");
+        modalButton.href = `/postcard/${buzzwordId}`;
 
-            // define container for content
-            const contentBox = modal.querySelector(".modal-content");
+        const contentBox = modal.querySelector(".modal-content");
+        const oldMedia = contentBox.querySelector("img, video");
+        if (oldMedia) oldMedia.remove();
 
-            // delete prev content
-            const oldMedia = contentBox.querySelector("img, video");
-            if (oldMedia) oldMedia.remove();
-
-            // creates new element
-            let mediaElement;
-            if (fileUrl.toLowerCase().endsWith(".mp4")) {
-                mediaElement = document.createElement("video");
-                mediaElement.src = fileUrl;
-                mediaElement.controls = true;
-                mediaElement.autoplay = true;
-                mediaElement.style.maxWidth = "500px";
-            } else {
-                mediaElement = document.createElement("img");
-                mediaElement.src = fileUrl;
-                mediaElement.alt = "Изображение";
-                mediaElement.className = "img-fluid";
-            }
-
-            // new el before button
-            contentBox.insertBefore(mediaElement, modalButton);
-
-            // coord modal
-            const rect = event.target.getBoundingClientRect();
-            let x = rect.left + window.scrollX;
-            let y = rect.bottom + window.scrollY + 5;
-
-            modal.style.left = `${x}px`;
-            modal.style.top = `${y}px`;
-            modal.style.display = "block";
+        let mediaElement;
+        if (fileType.toLowerCase() === 'video') {
+            mediaElement = document.createElement("video");
+            mediaElement.src = fileUrl;
+            mediaElement.controls = true;
+            mediaElement.autoplay = true;
+            mediaElement.style.maxWidth = "500px";
+        } else {
+            mediaElement = document.createElement("img");
+            mediaElement.src = fileUrl;
+            mediaElement.alt = "Изображение";
+            mediaElement.className = "img-fluid";
         }
+
+        contentBox.insertBefore(mediaElement, modalButton);
+
+        const rect = event.target.getBoundingClientRect();
+        modal.style.left = `${rect.left + window.scrollX}px`;
+        modal.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        modal.style.display = "block";
+    }
         function closeModal() {
             const modal = document.getElementById("imageModal");
 
