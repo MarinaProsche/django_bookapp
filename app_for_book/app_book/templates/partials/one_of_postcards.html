@@ -5,15 +5,17 @@
         <a href="{% url 'single_postcard' postcard.pk %}">
             {% if postcard.linked_file.file_type == 'video' %}
             <div class="video-preview-wrapper">
-                {% with fname=postcard.linked_file.file_name %}
-                <img src="{{ 'screens_for_video/'|add:fname|add:'.png'|storage_url }}"
-                     loading="lazy" decoding="async" class="card-img-top fixed-size-image">
+                {% with name=postcard.linked_file.file_name %}
+                <img src="{{ 'optimized/screens_for_video/'|add:name|add:'.webp'|storage_url }}" loading="lazy"
+                    decoding="async" class="card-img-top fixed-size-image" alt="">
                 {% endwith %}
                 <img src="{% static 'icons/video-preview-icon.png' %}" alt="Видео" class="video-preview-icon">
             </div>
             {% else %}
-            <img src="{{ postcard.linked_file.file.url }}" loading="lazy" decoding="async"
-                 alt="{{ postcard.linked_file.file_name }}" class="card-img-top fixed-size-image">
+            {% with name=postcard.linked_file.file_name %}
+            <img src="{{ 'optimized/media_files/'|add:name|add:'.webp'|storage_url }}" loading="lazy"
+                decoding="async" class="card-img-top fixed-size-image" alt="{{ name }}">
+            {% endwith %}
             {% endif %}
         </a>
         <div class="card-body">

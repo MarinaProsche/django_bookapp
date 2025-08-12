@@ -183,11 +183,15 @@ def postcards(request):
 # @login_required
 def single_postcard(request, target_buzzword):
     postcard = BuzzWord.objects.get(id=target_buzzword)
-    file_id = str(postcard.linked_file.file.url)
-    match = re.search(r"id=([\w-]+)", file_id)
-    if match:
-        file_id_tr = match.group(1)
-        file_id=f"https://drive.google.com/file/d/{file_id_tr}/preview"
+    file_id = ''
+    if postcard.linked_file and postcard.linked_file.file:
+        file_type = postcard.linked_file.file_type
+        base = os.path.splitext(os.path.basename(postcard.linked_file.file.name))[0]
+        if file_type == 'video':
+            optimized_path = f"optimized/media_files/{base}.mp4"
+        else:
+            optimized_path = f"optimized/media_files/{base}.webp"
+        file_id = default_storage.url(optimized_path)
     
     return render(request, 'single_postcard.html', {'postcard':postcard,
                                                     'file_id':file_id})
@@ -239,17 +243,21 @@ def map(request):
             # !  this block is for container with gcs:
             media_files = MediaFile.objects.filter(buzzword=bw)
             for mf in media_files:
-                file_url = mf.file.url if mf.file else None
+                file_url = None
+                if mf.file:
+                    base = os.path.splitext(os.path.basename(mf.file.name))[0]
+                    if mf.file.name.lower().endswith('.mp4'):
+                        optimized_path = f"optimized/screens_for_video/{base}.webp"
+                    else:
+                        optimized_path = f"optimized/media_files/{base}.webp"
 
-                # if video:
-                if mf.file and mf.file.name.endswith('mp4'):
-                    filename_no_ext = os.path.splitext(os.path.basename(mf.file.name))[0]
-                    file_url = default_storage.url(f"screens_for_video/{filename_no_ext}.png")
+                    file_url = default_storage.url(optimized_path)
 
                 grouped_locations[coord]['items'].append({
                     'img': file_url,
                     'url': f"/postcard/{bw.id}/"
                 })
+
 
     # based on locations
     locations = [
