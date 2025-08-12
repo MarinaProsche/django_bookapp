@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.storage import default_storage
+from django.core.paginator import Paginator
 
 
 from .models import Text, BuzzWord, Bookmarks, MediaFile, Favorites
@@ -117,14 +118,27 @@ def chapter(request, pk):
     })
 
 # @login_required
-def postcards(request):
-    postcards = BuzzWord.objects.all()
-    # favorites = Favorites.objects.filter(user=request.user).values_list('favorites_id', flat=True)
+# def postcards(request):
+#     postcards = BuzzWord.objects.all()
+#     # favorites = Favorites.objects.filter(user=request.user).values_list('favorites_id', flat=True)
 
-    return render(request, 'postcards.html', {
-        'postcards': postcards,
-        # 'favorites': favorites
-    })
+#     return render(request, 'postcards.html', {
+#         'postcards': postcards,
+#         # 'favorites': favorites
+#     })
+
+
+def postcards(request):
+    qs = BuzzWord.objects.select_related('linked_file', 'text').order_by('id')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(qs, 24)
+    page_obj = paginator.get_page(page)
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'partials/postcard_card_list.html', {'postcards': page_obj})
+
+    return render(request, 'postcards.html', {'postcards': page_obj})
+
 
 # @login_required
 def single_postcard(request, target_buzzword):

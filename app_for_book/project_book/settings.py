@@ -215,6 +215,8 @@ STORAGES = {
     },
 }
 
-MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
-if GS_LOCATION:
-    MEDIA_URL += f"{GS_LOCATION}/"
+# MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+# if GS_LOCATION:
+#     MEDIA_URL += f"{GS_LOCATION}/"
+
+MEDIA_URL = "https://34.49.215.74/"

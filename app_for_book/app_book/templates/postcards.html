@@ -12,51 +12,49 @@
 <body>
     <div class="container py-3">
         <h1 class="text-center no-margin-bottom">Стена с открытками</h1>
-        <p class="regular-text" style="text-align: left; padding-bottom: 10px;"> <i>* нажмите, чтобы открыть</i></p>
-        <div class="row row-cols-2 row-cols-lg-3 g-2">
+        <p class="regular-text" style="text-align: left; padding-bottom: 10px;">
+            <i>* нажмите, чтобы открыть</i>
+        </p>
+
+        <div id="postcards-container" class="row row-cols-2 row-cols-lg-3 g-2">
             {% for postcard in postcards %}
-            <div class="col">
-                <div class="card position-relative">
-                    <!--favorite -->
-                    <!-- <form method="POST" action="{% url 'add_to_favorites' postcard.linked_file.id %}"
-                        class="position-absolute top-0 end-0 m-2">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-link p-0 border-0">
-                            {% if postcard.linked_file.id in favorites %}
-                            <img src="{% static 'icons/heart_full.png' %}" alt="Remove from Favorites"
-                                class="icon-heart">
-                            {% else %}
-                            <img src="{% static 'icons/heart_empty.png' %}" alt="Add to Favorites" class="icon-heart">
-                            {% endif %}
-                        </button>
-                    </form> -->
-                    <!-- Image or video checking-->
-                    <a href="{% url 'single_postcard' postcard.pk %}">
-                        {% if postcard.linked_file.file_type == 'video' %}
-                        <div class="video-preview-wrapper">
-                            <!-- <img src="{% static 'images/pictures_for_buzzwords/screens_for_video/' %}{{ postcard.linked_file.file_name }}.png", -->
-                            {% with fname=postcard.linked_file.file_name %}
-                            <img src="{{ 'screens_for_video/'|add:fname|add:'.png'|storage_url }}"
-                                class="card-img-top fixed-size-image">
-                            {% endwith %}
-
-
-                            <img src="{% static 'icons/video-preview-icon.png' %}" alt="Видео"
-                                class="video-preview-icon">
-                        </div>
-                        {% else %}
-                        <img src="{{ postcard.linked_file.file.url }}" alt="{{ postcard.linked_file.file_name }}"
-                            class="card-img-top fixed-size-image">
-                        {% endif %}
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
-                    </div>
-                </div>
-            </div>
+            {% include 'partials/one_of_postcards.html' %}
             {% endfor %}
         </div>
+
+        <!-- scroll -->
+        <div id="load-more-trigger" style="height: 1px;"></div>
     </div>
+
+    <script>
+        let currentPage = {{ postcards.number }};  // текущая страница
+        let totalPages = {{ postcards.paginator.num_pages }};
+        let isLoading = false;
+
+        const loadMoreTrigger = document.getElementById('load-more-trigger');
+        const container = document.getElementById('postcards-container');
+
+        const observer = new IntersectionObserver(async (entries) => {
+            if (entries[0].isIntersecting && !isLoading && currentPage < totalPages) {
+                isLoading = true;
+                currentPage++;
+
+                try {
+                    const response = await fetch(`?page=${currentPage}`, {
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    });
+                    const html = await response.text();
+                    container.insertAdjacentHTML('beforeend', html);
+                } catch (e) {
+                    console.error('Ошибка загрузки:', e);
+                } finally {
+                    isLoading = false;
+                }
+            }
+        });
+
+        observer.observe(loadMoreTrigger);
+    </script>
 </body>
 
 </html>

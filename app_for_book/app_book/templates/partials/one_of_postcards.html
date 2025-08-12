@@ -1,0 +1,23 @@
+{% load extra_filters %}
+{% load static %}
+<div class="col">
+    <div class="card position-relative">
+        <a href="{% url 'single_postcard' postcard.pk %}">
+            {% if postcard.linked_file.file_type == 'video' %}
+            <div class="video-preview-wrapper">
+                {% with fname=postcard.linked_file.file_name %}
+                <img src="{{ 'screens_for_video/'|add:fname|add:'.png'|storage_url }}"
+                     loading="lazy" decoding="async" class="card-img-top fixed-size-image">
+                {% endwith %}
+                <img src="{% static 'icons/video-preview-icon.png' %}" alt="Видео" class="video-preview-icon">
+            </div>
+            {% else %}
+            <img src="{{ postcard.linked_file.file.url }}" loading="lazy" decoding="async"
+                 alt="{{ postcard.linked_file.file_name }}" class="card-img-top fixed-size-image">
+            {% endif %}
+        </a>
+        <div class="card-body">
+            <h5 class="card-title">{{ postcard.text.title_current_city }}</h5>
+        </div>
+    </div>
+</div>
