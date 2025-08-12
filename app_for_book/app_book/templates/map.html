@@ -6,7 +6,8 @@
 
 <head>
     <title>Map</title>
-    <script async src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=maps,marker&v=beta"></script>
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=maps,marker&v=beta"></script>
     <style>
         #map {
             height: 100vh;
@@ -21,15 +22,18 @@
         }
 
         a {
-        outline: none;                /* deletes outline */
-        -webkit-tap-highlight-color: transparent;
-        text-decoration: none;        /* deletes underline */
-    }
+            outline: none;
+            /* deletes outline */
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none;
+            /* deletes underline */
+        }
 
-    a:focus, a:active {
-        outline: none;
-        -webkit-tap-highlight-color: transparent;
-    }
+        a:focus,
+        a:active {
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 
@@ -46,44 +50,56 @@
                 mapId: "DEMO_MAP_ID"
             });
 
-            const locations = {{ locations_json|safe }};
-            let currentInfoWindow = null;
+            const locations = {{ locations_json| safe
+        }};
+        let currentInfoWindow = null;
 
-            locations.forEach(location => {
-                const marker = new google.maps.Marker({
-                    position: {
-                        lat: parseFloat(location.title_current_city_coord.split(',')[0]),
-                        lng: parseFloat(location.title_current_city_coord.split(',')[1])
-                    },
-                    map,
-                    title: location.title_current_city
-                });
+        locations.forEach(location => {
+            const marker = new google.maps.Marker({
+                position: {
+                    lat: parseFloat(location.title_current_city_coord.split(',')[0]),
+                    lng: parseFloat(location.title_current_city_coord.split(',')[1])
+                },
+                map,
+                title: location.title_current_city
+            });
 
-                // picture+link
-                const itemsHTML = (location.items || [])
-                    .map(item => `
-                        <div style="margin-bottom:5px;">
-                            ${item.img ? `<img src="${item.img}" style="max-width:80%; height:auto; display:block; border-radius:5px; margin:0 auto;">` : ''}
-                            <p><a href="${item.url}" target="_blank">Открыть</a></p>
-                        </div>
-                    `)
-                    .join('');
+            // picture+link
+            const itemsHTML = (location.items || [])
+                .map(item => `
+        <div style="margin-bottom:5px; text-align:center;">
+            ${item.img ? `<img data-src="${item.img}" style="max-width:80%; height:auto; display:block; border-radius:5px; margin:0 auto;">` : ''}
+            <p><a href="${item.url}" target="_blank">Открыть</a></p>
+        </div>
+    `)
+                .join('');
 
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `
-                        <div style="width:150px; font-size:14px;">
-                            ${itemsHTML || '<p><em>Нет данных</em></p>'}
-                        </div>
-                    `
-                });
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+        <div style="width:150px; font-size:14px;">
+            ${itemsHTML || '<p><em>Нет данных</em></p>'}
+        </div>
+    `
+            });
 
-                marker.addListener('click', () => {
-                    if (currentInfoWindow) currentInfoWindow.close();
-                    infoWindow.open(map, marker);
-                    currentInfoWindow = infoWindow;
+            marker.addListener('click', () => {
+                if (currentInfoWindow) currentInfoWindow.close();
+                infoWindow.open(map, marker);
+                currentInfoWindow = infoWindow;
+
+                // Найдём картинку внутри окна и подставим src
+                google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                    const imgs = document.querySelectorAll('img[data-src]');
+                    imgs.forEach(img => {
+                        img.setAttribute('src', img.getAttribute('data-src'));
+                        img.removeAttribute('data-src');
+                    });
                 });
             });
+
+        });
         }
-        </script>
+    </script>
 </body>
+
 </html>

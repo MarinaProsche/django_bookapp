@@ -5,83 +5,83 @@
 
 {% block content %}
 <div class="container py-3">
-    <h1 class="text-center mb-4">Оглавление</h1>
+  <h1 class="text-center mb-4">Оглавление</h1>
 
-    <input type="text" id="search-input" class="form-control mb-3" placeholder="Поиск..." autocomplete="off">
+  <input type="text" id="search-input" class="form-control mb-3" placeholder="Поиск..." autocomplete="off">
 
-    <div class="table-responsive" id="results">
-        <table class="table table-hover">
-            <tbody id="heads-body">
-                {% include 'partials/one_of_heads.html' %}
-            </tbody>
-        </table>
-    </div>
+  <div class="table-responsive" id="results">
+    <table class="table table-hover">
+      <tbody id="heads-body">
+        {% include 'partials/one_of_heads.html' %}
+      </tbody>
+    </table>
+  </div>
 
-    <!-- trigger IntersectionObserver -->
-    <div id="heads-sentinel" style="height:1px;"></div>
+  <!-- trigger for IntersectionObserver -->
+  <div id="heads-sentinel" style="height:1px;"></div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    (function () {
-        const bodyEl = document.getElementById('heads-body');
-        const sentinel = document.getElementById('heads-sentinel');
-        const searchInput = document.getElementById('search-input');
+(function() {
+  const bodyEl = document.getElementById('heads-body');
+  const sentinel = document.getElementById('heads-sentinel');
+  const searchInput = document.getElementById('search-input');
 
-        let currentPage = {{ texts.number }
-    };
-    let isLoading = false;
-    let nextPage = {{ next_page_number|default: "null" }};;
+  let currentPage = {{ texts.number }};
+  let isLoading = false;
+  let nextPage = {{ next_page_number|default:"null" }};; // 
 
-    // extra load
-    async function loadPage(page, query) {
-        const params = new URLSearchParams();
-        params.set('page', page);
-        params.set('partial', '1');
-        if (query) params.set('q', query);
 
-        isLoading = true;
-        try {
-            const r = await fetch(`?${params.toString()}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            const html = await r.text();
-            bodyEl.insertAdjacentHTML('beforeend', html);
-            const hdr = r.headers.get('X-Next-Page');
-            nextPage = hdr ? parseInt(hdr, 10) : null;
-            currentPage = page;
-        } catch (e) {
-            console.error('Ошибка догрузки:', e);
-        } finally {
-            isLoading = false;
-        }
+  // extra loading
+  async function loadPage(page, query) {
+    const params = new URLSearchParams();
+    params.set('page', page);
+    params.set('partial', '1');
+    if (query) params.set('q', query);
+
+    isLoading = true;
+    try {
+      const r = await fetch(`?${params.toString()}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+      const html = await r.text();
+      bodyEl.insertAdjacentHTML('beforeend', html);
+      const hdr = r.headers.get('X-Next-Page');
+      nextPage = hdr ? parseInt(hdr, 10) : null;
+      currentPage = page;
+    } catch (e) {
+      console.error('Ошибка догрузки:', e);
+    } finally {
+      isLoading = false;
     }
+  }
 
-    // infinite scroll
-    const io = new IntersectionObserver(async (entries) => {
-        const entry = entries[0];
-        if (!entry.isIntersecting || isLoading) return;
-        if (!nextPage) return;
+  // IntersectionObserver for infinite scroll
+  const io = new IntersectionObserver(async (entries) => {
+    const entry = entries[0];
+    if (!entry.isIntersecting || isLoading) return;
+    if (!nextPage) return; //
 
-        await loadPage(nextPage, searchInput.value.trim());
-    }, { rootMargin: '400px' });
+    await loadPage(nextPage, searchInput.value.trim());
+  }, { rootMargin: '400px' });
 
-    io.observe(sentinel);
+  io.observe(sentinel);
 
-    // search
-    let searchTimer = null;
-    searchInput.addEventListener('input', () => {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(async () => {
-            const q = searchInput.value.trim();
-            // clean
-            bodyEl.innerHTML = '';
-            // reset
-            currentPage = 0;
-            nextPage = 1;
-            // load 1 page
-            await loadPage(1, q);
-        }, 250); // debounce
-    });
-}) ();
+  // Search
+  let searchTimer = null;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(async () => {
+      const q = searchInput.value.trim();
+      // clean
+      bodyEl.innerHTML = '';
+      // reset
+      currentPage = 0;
+      nextPage = 1;
+      // 1 page for results
+      await loadPage(1, q);
+    }, 250); // debounce
+  });
+})();
 </script>
 {% endblock %}
