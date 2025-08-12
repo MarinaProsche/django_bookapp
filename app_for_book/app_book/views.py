@@ -49,38 +49,78 @@ def logout_view(request):
     logout(request)
     return redirect('greeting')
 
+# without pagination
+
 # @login_required
+# def heads(request):
+#     query = request.GET.get('q', '').strip().lower()
+#     if request.user.is_authenticated:
+#         has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user))
+#         texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
+#     else:
+#         texts = Text.objects.all()
+
+#     if query:
+#         texts = [
+#             text for text in texts
+#             if query in text.title_current_city.lower()
+#             or query in str(text.chapter_number)
+#             or query in text.get_title_home_city_display().lower()
+#         ]
+
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#         return JsonResponse({
+#             'texts': [
+#                 {
+#                     'title': text.title_current_city,
+#                     'chapter_number': text.chapter_number,
+#                     'home_city': text.get_title_home_city_display(),
+#                     'cover': str(text.chapter_cover) if text.chapter_cover else None
+#                 }
+#                 for text in texts
+#             ]
+#         })
+
+#     return render(request, 'chapters.html', {'texts': texts})
+
+
 def heads(request):
-    query = request.GET.get('q', '').strip().lower()
+    query = (request.GET.get('q') or '').strip().lower()
+
     if request.user.is_authenticated:
-        has_bookmark = Exists(Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user))
-        texts = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
+        has_bookmark = Exists(
+            Bookmarks.objects.filter(bookmark=OuterRef('pk'), user=request.user)
+        )
+        base_qs = Text.objects.annotate(first_page=has_bookmark).order_by('-first_page', 'pk')
     else:
-        texts = Text.objects.all()
+        base_qs = Text.objects.all().order_by('pk')
 
     if query:
-        texts = [
-            text for text in texts
-            if query in text.title_current_city.lower()
-            or query in str(text.chapter_number)
-            or query in text.get_title_home_city_display().lower()
+        texts_list = [
+            t for t in base_qs
+            if query in t.title_current_city.lower()
+               or query in str(t.chapter_number)
+               or query in t.get_title_home_city_display().lower()
         ]
+    else:
+        texts_list = list(base_qs)
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({
-            'texts': [
-                {
-                    'title': text.title_current_city,
-                    'chapter_number': text.chapter_number,
-                    'home_city': text.get_title_home_city_display(),
-                    'cover': str(text.chapter_cover) if text.chapter_cover else None
-                }
-                for text in texts
-            ]
-        })
+    page = request.GET.get('page', 1)
+    paginator = Paginator(texts_list, 20)
+    page_obj = paginator.get_page(page)
 
-    return render(request, 'chapters.html', {'texts': texts})
 
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('partial') == '1':
+        resp = render(request, 'partials/one_of_heads.html', {'texts': page_obj})
+
+        if page_obj.has_next():
+            resp['X-Next-Page'] = str(page_obj.next_page_number())
+        return resp
+
+    return render(request, 'chapters.html', {
+    'texts': page_obj,
+    'next_page_number': page_obj.next_page_number() if page_obj.has_next() else None
+})
 
 # @login_required
 def chapter(request, pk):

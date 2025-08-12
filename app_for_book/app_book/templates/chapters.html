@@ -1,90 +1,87 @@
-<!DOCTYPE html>
 {% extends 'index.html' %}
 {% load static %}
 
-
 {% block title %}Оглавление{% endblock %}
-{% block extra_head %}
 
-{% endblock %}
 {% block content %}
+<div class="container py-3">
+    <h1 class="text-center mb-4">Оглавление</h1>
 
-    <div class="container py-3">
-        <h1 class="text-center mb-4">Оглавление</h1>
-        <input type="text" id="search-input" class="form-control mb-3" placeholder="Поиск...">
-        <div class="table-responsive" id="results">
-            <table class="table table-hover">
-                <tbody>
-                    {% for text in texts %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'chapter' text.pk %}" class="all-chapters">
-                                <strong>{{ text.title_current_city }}</strong>
-                                {% if text.first_page %}
-                                
-                                <div class="tiny-text">
-                                    <img src="{% static 'icons/bookmark_full.svg' %}" class="icon-tiny">
-                                    Вы остановились здесь</div>
-                                {% else %}
-                                {% if text.title_home_city %}
-                                <div class="text-muted">→ {{ text.get_title_home_city_display }}</div>
-                                {% endif %}
-                                {% endif %}
-                                
-                            </a>
-                        </td>
-                        <td class="text-end">
-                            <img src="{{ text.chapter_cover }}" alt="{{ text.title_current_city }}"
-                                class="img-thumbnail" style="max-width: 100px; height: auto;">
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="2" class="text-center">No texts available.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <input type="text" id="search-input" class="form-control mb-3" placeholder="Поиск..." autocomplete="off">
+
+    <div class="table-responsive" id="results">
+        <table class="table table-hover">
+            <tbody id="heads-body">
+                {% include 'partials/one_of_heads.html' %}
+            </tbody>
+        </table>
     </div>
-    {% endblock %}
-    {% block extra_js %}
-    <script>
-        $(document).ready(function () {
-            $('#search-input').on('input', function () {
-                const query = $(this).val();
-                $.ajax({
-                    url: "{% url 'heads' %}",
-                    method: "GET",
-                    data: { q: query },
-                    success: function (data) {
-                        let resultHtml = "";
-                        // console.log(data.texts); //
 
-                        if (data.texts.length) {
-                            data.texts.forEach(function (text) {
-                                let chapterCover = text.cover ? text.cover : "/static/images/default-thumbnail.jpg";
+    <!-- trigger IntersectionObserver -->
+    <div id="heads-sentinel" style="height:1px;"></div>
+</div>
+{% endblock %}
 
-                                resultHtml += `
-                <tr>
-                    <td>
-                        <a href="/chapters/${text.chapter_number}" class="all-chapters">
-                            <strong>${text.title}</strong>
-                            <div class="text-muted">→ ${text.home_city}</div>
-                        </a>
-                    </td>
-                    <td class="text-end">
-                        <img src="${chapterCover}" alt="${text.title}" class="img-thumbnail" style="max-width: 100px; height: auto;">
-                    </td>
-                </tr>`;
-                            });
-                        } else {
-                            resultHtml = "<tr><td colspan='2' class='text-center'>Ничего не найдено.</td></tr>";
-                        }
-                        $('#results tbody').html(resultHtml);
-                    }
-                });
-            });
-        });
-    </script>
-        {% endblock %}
+{% block extra_js %}
+<script>
+    (function () {
+        const bodyEl = document.getElementById('heads-body');
+        const sentinel = document.getElementById('heads-sentinel');
+        const searchInput = document.getElementById('search-input');
+
+        let currentPage = {{ texts.number }
+    };
+    let isLoading = false;
+    let nextPage = {{ next_page_number|default: "null" }};;
+
+    // extra load
+    async function loadPage(page, query) {
+        const params = new URLSearchParams();
+        params.set('page', page);
+        params.set('partial', '1');
+        if (query) params.set('q', query);
+
+        isLoading = true;
+        try {
+            const r = await fetch(`?${params.toString()}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const html = await r.text();
+            bodyEl.insertAdjacentHTML('beforeend', html);
+            const hdr = r.headers.get('X-Next-Page');
+            nextPage = hdr ? parseInt(hdr, 10) : null;
+            currentPage = page;
+        } catch (e) {
+            console.error('Ошибка догрузки:', e);
+        } finally {
+            isLoading = false;
+        }
+    }
+
+    // infinite scroll
+    const io = new IntersectionObserver(async (entries) => {
+        const entry = entries[0];
+        if (!entry.isIntersecting || isLoading) return;
+        if (!nextPage) return;
+
+        await loadPage(nextPage, searchInput.value.trim());
+    }, { rootMargin: '400px' });
+
+    io.observe(sentinel);
+
+    // search
+    let searchTimer = null;
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(async () => {
+            const q = searchInput.value.trim();
+            // clean
+            bodyEl.innerHTML = '';
+            // reset
+            currentPage = 0;
+            nextPage = 1;
+            // load 1 page
+            await loadPage(1, q);
+        }, 250); // debounce
+    });
+}) ();
+</script>
+{% endblock %}

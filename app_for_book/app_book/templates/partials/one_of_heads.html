@@ -1,0 +1,36 @@
+{% load static %}
+{% for text in texts %}
+<tr>
+  <td>
+    <a href="{% url 'chapter' text.pk %}" class="all-chapters">
+      <strong>{{ text.title_current_city }}</strong>
+      {% if text.first_page %}
+      <div class="tiny-text">
+        <img src="{% static 'icons/bookmark_full.svg' %}" class="icon-tiny">
+        Вы остановились здесь
+      </div>
+      {% else %}
+      {% if text.title_home_city %}
+      <div class="text-muted">→ {{ text.get_title_home_city_display }}</div>
+      {% endif %}
+      {% endif %}
+    </a>
+  </td>
+  <td class="text-end">
+    {% if text.chapter_cover %}
+    {% with cover_str=text.chapter_cover|stringformat:"s" %}
+    {% if cover_str|slice:":8" == "https://" or cover_str|slice:":7" == "http://" %}
+    <img src="{{ cover_str }}" alt="{{ text.title_current_city }}" class="img-thumbnail"
+      style="max-width:100px;height:auto" loading="lazy" decoding="async">
+    {% else %}
+    <img src="{{ text.chapter_cover.url }}" alt="{{ text.title_current_city }}" class="img-thumbnail"
+      style="max-width:100px;height:auto" loading="lazy" decoding="async">
+    {% endif %}
+    {% endwith %}
+    {% else %}
+    <img src="{% static 'images/default-thumbnail.jpg' %}" alt="No cover" class="img-thumbnail"
+      style="max-width:100px;height:auto" loading="lazy" decoding="async">
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
