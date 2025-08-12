@@ -1,105 +1,94 @@
-<!-- Don't format this file! -->
-
 <!DOCTYPE html>
 {% include 'index.html' %}
 <html>
-
 <head>
-    <title>Map</title>
-    <script async
-        src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=maps,marker&v=beta"></script>
-    <style>
-        #map {
-            height: 100vh;
-            width: 100%;
-        }
+  <title>Map</title>
+  <style>
+    #map { height: 100vh; width: 100%; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    a { outline: none; -webkit-tap-highlight-color: transparent; text-decoration: none; }
+    a:focus, a:active { outline: none; -webkit-tap-highlight-color: transparent; }
+  </style>
 
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+  {#  #}
+  <script id="locations-data" type="application/json">
+    {{ locations_json|safe }}
+  </script>
 
-        a {
-            outline: none;
-            /* deletes outline */
-            -webkit-tap-highlight-color: transparent;
-            text-decoration: none;
-            /* deletes underline */
-        }
+  <script>
+    //
+    window.initMap = function () {
+      const dataEl = document.getElementById('locations-data');
+      // if not data:
+      if (!dataEl) return;
 
-        a:focus,
-        a:active {
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-    </style>
+      let locations = [];
+      try {
+        locations = JSON.parse(dataEl.textContent || '[]');
+      } catch (e) {
+        console.error('Bad locations JSON', e);
+        locations = [];
+      }
+
+      const map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 50.1136, lng: 8.6785 },
+        zoom: 4,
+        // mapId
+        // mapId: "DEMO_MAP_ID"
+      });
+
+      let currentInfoWindow = null;
+
+      locations.forEach(loc => {
+        const [latStr, lngStr] = String(loc.title_current_city_coord).split(',');
+        const marker = new google.maps.Marker({
+          position: { lat: parseFloat(latStr), lng: parseFloat(lngStr) },
+          map,
+          title: loc.title_current_city
+        });
+
+        // conten without src — just data-src
+        const itemsHTML = (loc.items || []).map(item => `
+          <div style="margin-bottom:5px; text-align:center;">
+            ${item.img ? `<img data-src="${item.img}" loading="lazy"
+               style="max-width:80%; height:auto; display:block; border-radius:5px; margin:0 auto;">` : ''}
+            <p><a href="${item.url}" target="_blank" rel="noopener">Открыть</a></p>
+          </div>
+        `).join('');
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<div style="width:150px; font-size:14px;">
+                      ${itemsHTML || '<p><em>Нет данных</em></p>'}
+                    </div>`
+        });
+
+        marker.addListener('click', () => {
+          if (currentInfoWindow) currentInfoWindow.close();
+          infoWindow.open(map, marker);
+          currentInfoWindow = infoWindow;
+
+          // just src after render window
+          google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+            const imgs = document.querySelectorAll('img[data-src]');
+            imgs.forEach(img => {
+              img.src = img.getAttribute('data-src');
+              img.removeAttribute('data-src');
+            });
+          });
+        });
+      });
+    };
+  </script>
+
+  <!--  callback for window.initMap -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=maps,marker&v=beta&loading=async"
+    async defer></script>
 </head>
 
 <body>
-    <h1 class="text-center no-margin-bottom">Маршруты героев</h1>
-    <p class="regular-text" style="text-align: left; padding-bottom: 10px;"> <i>* нажмите, чтобы открыть</i></p>
-
-    <div id="map"></div>
-    <script>
-        function initMap() {
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 50.1136, lng: 8.6785 },
-                zoom: 4,
-                mapId: "DEMO_MAP_ID"
-            });
-
-            const locations = {{ locations_json| safe
-        }};
-        let currentInfoWindow = null;
-
-        locations.forEach(location => {
-            const marker = new google.maps.Marker({
-                position: {
-                    lat: parseFloat(location.title_current_city_coord.split(',')[0]),
-                    lng: parseFloat(location.title_current_city_coord.split(',')[1])
-                },
-                map,
-                title: location.title_current_city
-            });
-
-            // picture+link
-            const itemsHTML = (location.items || [])
-                .map(item => `
-        <div style="margin-bottom:5px; text-align:center;">
-            ${item.img ? `<img data-src="${item.img}" style="max-width:80%; height:auto; display:block; border-radius:5px; margin:0 auto;">` : ''}
-            <p><a href="${item.url}" target="_blank">Открыть</a></p>
-        </div>
-    `)
-                .join('');
-
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-        <div style="width:150px; font-size:14px;">
-            ${itemsHTML || '<p><em>Нет данных</em></p>'}
-        </div>
-    `
-            });
-
-            marker.addListener('click', () => {
-                if (currentInfoWindow) currentInfoWindow.close();
-                infoWindow.open(map, marker);
-                currentInfoWindow = infoWindow;
-
-                // Найдём картинку внутри окна и подставим src
-                google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
-                    const imgs = document.querySelectorAll('img[data-src]');
-                    imgs.forEach(img => {
-                        img.setAttribute('src', img.getAttribute('data-src'));
-                        img.removeAttribute('data-src');
-                    });
-                });
-            });
-
-        });
-        }
-    </script>
+  <h1 class="text-center no-margin-bottom">Маршруты героев</h1>
+  <p class="regular-text" style="text-align: left; padding-bottom: 10px;"><i>* нажмите, чтобы открыть</i></p>
+  <div id="map"></div>
 </body>
-
 </html>
