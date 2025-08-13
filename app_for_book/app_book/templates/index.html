@@ -5,84 +5,102 @@
 {% load static %}
 
 <head>
-    <title>{% block title %}Лабиринт из черёмухи{% endblock %}</title>
-    <link rel="manifest" href="{% static 'manifest.json' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="icon" href="{% static 'images/icon_favicon_512.png' %}" type="image/png">
-    <link rel="apple-touch-icon" href="{% static 'images/icon_favicon_192.png' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% block extra_head %}{% endblock %}
+  <title>{% block title %}Лабиринт из черёмухи{% endblock %}</title>
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="icon" href="{% static 'images/icon_favicon_512.png' %}" type="image/png">
+  <link rel="apple-touch-icon" href="{% static 'images/icon_favicon_192.png' %}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% block extra_head %}{% endblock %}
 </head>
 
 <body>
-    <div class="container py-3">
+  <div id="loading-overlay" style="display: none;">
+    <div class="loading-content">
+      <img src="{% static 'images/loading.gif' %}" alt="Загрузка..." class="loading-gif">
+      <p>Карта загружается...</p>
+    </div>
+  </div>
+  <div class="container py-3">
 
-        <div class="d-flex justify-content-end mb-2 mt-2 gap-2">
-            <a href="{% url 'greeting' %}" class="btn btn-lavender">В начало</a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="btn btn-lavender">Выйти</a>
-            {% else %}
-            <a href="{% url 'logout' %}" class="btn btn-lavender">Войти</a>
-            {% endif %}
-        </div>
-        <!-- {% endif %,} -->
-        {% if messages %}
-  <div id="messages-container">
-    {% for message in messages %}
+    <div class="d-flex justify-content-end mb-2 mt-2 gap-2">
+      <a href="{% url 'greeting' %}" class="btn btn-lavender">В начало</a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="btn btn-lavender">Выйти</a>
+      {% else %}
+      <a href="{% url 'logout' %}" class="btn btn-lavender">Войти</a>
+      {% endif %}
+    </div>
+    <!-- {% endif %,} -->
+    {% if messages %}
+    <div id="messages-container">
+      {% for message in messages %}
       <div class="centered-message alert alert-{{ message.tags }}">
         {{ message }}
       </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% block content %}
+    {% endblock %}
   </div>
-{% endif %}
+
+  <div class="toolbar d-flex justify-content-center gap-5">
+    <!-- {% if user.is_authenticated %,} -->
+    <a href="{% url 'heads' %}" class="icon-link">
+      <img src="{% static 'icons/head.svg' %}" alt="Оглавление" class="icon">
+    </a>
+    <a href="{% url 'postcards' %}" class="icon-link">
+      <img src="{% static 'icons/postcards2.svg' %}" alt="Открытки" class="icon">
+    </a>
+    <a href="{% url 'map' %}" class="icon-link">
+      <img src="{% static 'icons/map.svg' %}" alt="Карта" class="icon">
+    </a>
+    <!-- {% endif %,} -->
+  </div>
 
 
-        {% block content %}
-        {% endblock %}
-    </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/serviceworker.js')
+        .then(function (reg) {
+          console.log('', reg.scope);
+        })
+        .catch(function (error) {
+          console.error('', error);
+        });
+    }
 
-    <div class="toolbar d-flex justify-content-center gap-5">
-        <!-- {% if user.is_authenticated %,} -->
-        <a href="{% url 'heads' %}" class="icon-link">
-            <img src="{% static 'icons/head.svg' %}" alt="Оглавление" class="icon">
-        </a>
-        <a href="{% url 'postcards' %}" class="icon-link">
-            <img src="{% static 'icons/postcards2.svg' %}" alt="Открытки" class="icon">
-        </a>
-        <a href="{% url 'map' %}" class="icon-link">
-            <img src="{% static 'icons/map.svg' %}" alt="Карта" class="icon">
-        </a>
-        <!-- {% endif %,} -->
-    </div>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js')
-                .then(function (reg) {
-                    console.log('', reg.scope);
-                })
-                .catch(function (error) {
-                    console.error('', error);
-                });
-        }
-
-            document.addEventListener("DOMContentLoaded", function () {
-    const messages = document.querySelectorAll('.centered-message');
-    messages.forEach((message) => {
-      setTimeout(() => {
-        message.classList.add('fade-out');
-      }, 3000); // disappears after 3 sec
-      setTimeout(() => {
-        message.remove();
-      }, 4000); // deletes after 4 sec
+    document.addEventListener("DOMContentLoaded", function () {
+      const messages = document.querySelectorAll('.centered-message');
+      messages.forEach((message) => {
+        setTimeout(() => {
+          message.classList.add('fade-out');
+        }, 3000); // disappears after 3 sec
+        setTimeout(() => {
+          message.remove();
+        }, 4000); // deletes after 4 sec
+      });
     });
-  });
-    </script>
-    {% block extra_js %}{% endblock %}
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mapLink = document.querySelector('a[href="{% url 'map' %}"]');
+      const overlay = document.getElementById('loading-overlay');
+
+      if (mapLink && overlay) {
+        mapLink.addEventListener('click', () => {
+          overlay.style.display = 'flex';
+        });
+      }
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
 </body>
 
 </html>
