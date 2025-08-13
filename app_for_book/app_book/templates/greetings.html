@@ -1,8 +1,5 @@
 {% extends 'index.html' %}
 {% load static %}
-
-{% block title %}Добро пожаловать!{% endblock %}
-
 {% block content %}
 <div class="container-fluid p-0">
     {% if not user.is_authenticated %}
@@ -14,6 +11,9 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-5 col-md-9">
             <div class="image-container">
+                <div class="image-text-overlay">
+                    Спасибо, что выбрали наш проект!
+                </div>
                 <img src="{% static 'images/greetings.jpg' %}"
                     class="img-fluid small-image d-block mx-auto {% if user.is_authenticated %}opacity-100{% else %}opacity-70{% endif %}"
                     alt="">

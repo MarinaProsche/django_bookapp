@@ -139,6 +139,19 @@ body, html {
     max-width: 400px;
 }
 
+.image-text-overlay {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(192, 214, 201, 0.5);
+    color: rgb(5, 5, 5);
+    padding: 8px 15px;
+    font-size: 1.2rem;
+    text-align: center;
+    z-index: 2;
+    white-space: nowrap;
+}
 
 .title-text {
     font-size: 1.0rem;

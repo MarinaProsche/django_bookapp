@@ -150,8 +150,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'app_book/static/js', 'serviceworker.js')
 
 
-PWA_APP_NAME = 'bookappPWA'
-PWA_APP_DESCRIPTION = "bookappPWA"
+PWA_APP_NAME = 'Лабиринт из черёмухи'
+PWA_APP_DESCRIPTION = ""
 PWA_APP_THEME_COLOR = '#000000'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'
 PWA_APP_DISPLAY = 'standalone'
@@ -161,15 +161,19 @@ PWA_APP_START_URL = '/'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
-        'src': 'static/images/icon-160x160.png',
-        'sizes': '160x160'
+        "src": "/static/images/icon-favicon_192.png",
+        "sizes": "192x192"
+    },
+    {
+        "src": "/static/images/icon_favicon_512.png",
+        "sizes": "512x512"
     }
 ]
 PWA_APP_ICONS_APPLE = [
     {
-        'src': 'static/images/icon-160x160.png',
-        'sizes': '160x160'
-    }
+        "src": "/static/images/icon-favicon_192.png",
+        "sizes": "192x192"
+    },
 ]
 PWA_APP_SPLASH_SCREEN = [
     {

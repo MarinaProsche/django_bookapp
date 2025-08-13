@@ -5,11 +5,13 @@
 {% load static %}
 
 <head>
-    <title>{% block title %}BookApp{% endblock %}</title>
+    <title>{% block title %}Лабиринт из черёмухи{% endblock %}</title>
     <link rel="manifest" href="{% static 'manifest.json' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" href="{% static 'images/icon_favicon_512.png' %}" type="image/png">
+    <link rel="apple-touch-icon" href="{% static 'images/icon_favicon_192.png' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% block extra_head %}{% endblock %}
 </head>
@@ -67,19 +69,6 @@
                     console.error('', error);
                 });
         }
-
-        fetch('/greetings')
-            .then(response => {
-                if (!response.ok) throw new Error('');
-                return response.text();
-            })
-            .then(html => {
-                document.getElementById('dynamic-content').innerHTML = html;
-            })
-            .catch(err => {
-                document.getElementById('dynamic-content').innerHTML = '';
-                console.error(err);
-            });
 
             document.addEventListener("DOMContentLoaded", function () {
     const messages = document.querySelectorAll('.centered-message');
