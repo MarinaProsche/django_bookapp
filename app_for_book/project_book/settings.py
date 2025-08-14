@@ -32,8 +32,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), '127.0.0.1',]
-CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("ALLOWED_HOST")}', "http://127.0.0.1:8000"]
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), '127.0.0.1', 'roman-v-otkrytkah.com']
+CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("ALLOWED_HOST")}', "http://127.0.0.1:8000", "https://roman-v-otkrytkah.com"]
 
 # Application definition
 
@@ -219,8 +219,9 @@ STORAGES = {
     },
 }
 
-# MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
-# if GS_LOCATION:
-#     MEDIA_URL += f"{GS_LOCATION}/"
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+if GS_LOCATION:
+    MEDIA_URL += f"{GS_LOCATION}/"
 
-MEDIA_URL = "https://34.49.215.74/"
+# MEDIA_URL = "https://34.49.215.74/"
+
