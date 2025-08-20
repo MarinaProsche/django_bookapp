@@ -28,6 +28,9 @@
             </h1>
         </div>
         <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr }}</p>
+        {% if text.title_current_city == 'Конечная' %}
+        <img src="{% static 'images/end.png' %}" alt="end" class="responsive-media">
+        {% endif %}
 
         <div class="d-flex justify-content-between align-items-end mt-4">
             {% if prev_chapter %}
@@ -39,20 +42,29 @@
             {% endif %}
 
             {% if next_chapter %}
+            {% if text.title_current_city == 'Конечная' %}
+            <div class="text-center d-flex flex-column align-items-center lh-1">
+                <span class="small text-muted">ФИНАЛ</span>
+                <a href="{% url 'chapter' next_chapter %}" class="icon-link m-0 p-0">
+                  <img src="{% static 'icons/right2.svg' %}" alt="Вправо" class="icon d-block">
+                </a>
+              </div>
+            {% else %}
             <a href="{% url 'chapter' next_chapter %}" class="icon-link">
-
                 <img src="{% static 'icons/right2.svg' %}" alt="Вправо" class="icon">
             </a>
+            {% endif %}
             {% endif %}
         </div>
         {% if text.pk == 1 %}
         <p class="regular-text" style="text-align: left; padding-bottom: 10px;">
             <i>
-            <br>_______________
-            <br>* Здесь и далее:
-            <br>Чтобы оказаться рядом с героями и посмотреть на мир их глазами, нажмите на выделенное слово.
-            <br>Нажмите на стрелочки, чтобы открыть шире (прим. авт.).</i></p>
-            {% endif %}
+                <br>_______________
+                <br>* Здесь и далее:
+                <br>Чтобы оказаться рядом с героями и посмотреть на мир их глазами, нажмите на выделенное слово.
+                <br>Нажмите на стрелочки, чтобы открыть шире (прим. авт.).</i>
+        </p>
+        {% endif %}
     </div>
 
     <!-- Open images and video -->
@@ -67,35 +79,35 @@
     </div>
 
     <script>function openModal(fileUrl, buzzwordId, fileType, event) {
-        const modal = document.getElementById("imageModal");
-        const modalButton = document.getElementById("modalButton");
-        modalButton.href = `/postcard/${buzzwordId}`;
+            const modal = document.getElementById("imageModal");
+            const modalButton = document.getElementById("modalButton");
+            modalButton.href = `/postcard/${buzzwordId}`;
 
-        const contentBox = modal.querySelector(".modal-content");
-        const oldMedia = contentBox.querySelector("img, video");
-        if (oldMedia) oldMedia.remove();
+            const contentBox = modal.querySelector(".modal-content");
+            const oldMedia = contentBox.querySelector("img, video");
+            if (oldMedia) oldMedia.remove();
 
-        let mediaElement;
-        if (fileType.toLowerCase() === 'video') {
-            mediaElement = document.createElement("video");
-            mediaElement.src = fileUrl;
-            mediaElement.controls = true;
-            mediaElement.autoplay = true;
-            mediaElement.style.maxWidth = "500px";
-        } else {
-            mediaElement = document.createElement("img");
-            mediaElement.src = fileUrl;
-            mediaElement.alt = "Изображение";
-            mediaElement.className = "img-fluid";
+            let mediaElement;
+            if (fileType.toLowerCase() === 'video') {
+                mediaElement = document.createElement("video");
+                mediaElement.src = fileUrl;
+                mediaElement.controls = true;
+                mediaElement.autoplay = true;
+                mediaElement.style.maxWidth = "500px";
+            } else {
+                mediaElement = document.createElement("img");
+                mediaElement.src = fileUrl;
+                mediaElement.alt = "Изображение";
+                mediaElement.className = "img-fluid";
+            }
+
+            contentBox.insertBefore(mediaElement, modalButton);
+
+            const rect = event.target.getBoundingClientRect();
+            modal.style.left = `${rect.left + window.scrollX}px`;
+            modal.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            modal.style.display = "block";
         }
-
-        contentBox.insertBefore(mediaElement, modalButton);
-
-        const rect = event.target.getBoundingClientRect();
-        modal.style.left = `${rect.left + window.scrollX}px`;
-        modal.style.top = `${rect.bottom + window.scrollY + 5}px`;
-        modal.style.display = "block";
-    }
         function closeModal() {
             const modal = document.getElementById("imageModal");
 
