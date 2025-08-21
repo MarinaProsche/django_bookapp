@@ -10,10 +10,10 @@ class Text(models.Model):
     ]
 
     chapter_number = models.IntegerField(primary_key=True)
-    title_current_city = models.CharField(max_length=50)
+    title_current_city = models.CharField(max_length=50, blank=True, null=True)
     title_current_city_coord = models.CharField(max_length=100)
     title_home_city = models.CharField(choices=HOME_CITY_TYPE,max_length=3)
-    main_text = models.CharField(max_length=1000)
+    main_text = models.CharField(max_length=5000)
     chapter_cover = models.FileField(upload_to='media_files/', blank=True, null=True)
 
     @property

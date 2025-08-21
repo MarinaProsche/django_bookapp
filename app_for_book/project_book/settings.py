@@ -84,12 +84,37 @@ WSGI_APPLICATION = 'project_book.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+if os.getenv("USE_POSTGRES", "0") == "1":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "bookdb"),
+            "USER": os.getenv("DB_USER", "bookuser"),
+            "PASSWORD": os.getenv("DB_PASS", ""),
+            "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+if os.getenv("K_SERVICE"):  # inside cloude run
+    INSTANCE = os.getenv("INSTANCE_CONNECTION_NAME")
+    if INSTANCE:
+        DATABASES["default"]["HOST"] = f"/cloudsql/{INSTANCE}"
+        DATABASES["default"]["PORT"] = ""  # should be empty!
 
 
 # Password validation
@@ -187,41 +212,55 @@ PWA_APP_LANG = 'en-US'
 
 # bucket storage:
 
-# GS_BUCKET_NAME = os.getenv("GS_BUCKET_NAME")
-
-# # default:
-# DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-
-# # way to json
-# GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-#     os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-# )
-
 # MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
-
-GS_BUCKET_NAME = os.getenv("GS_BUCKET_NAME")
-GS_LOCATION = ""
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-)
-
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-        "OPTIONS": {
-            "bucket_name": GS_BUCKET_NAME,
-            # "location": GS_LOCATION,   # we don't use it because of upload_to = media_files from models
-            "credentials": GS_CREDENTIALS,
-        },
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
-if GS_LOCATION:
-    MEDIA_URL += f"{GS_LOCATION}/"
+# if GS_LOCATION:
+#     MEDIA_URL += f"{GS_LOCATION}/"
 
 # MEDIA_URL = "https://34.49.215.74/"
 
+GS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "")
+GS_LOCATION = os.getenv("GS_LOCATION", "").strip("/")
+USE_GCS = bool(GS_BUCKET_NAME)
+
+GS_CREDENTIALS = None  # объявляем всегда
+
+if USE_GCS:
+
+    from google.auth import default as google_auth_default
+    try:
+        GS_CREDENTIALS, _ = google_auth_default()
+    except Exception:
+        GS_CREDENTIALS = None
+
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+            # just in case:
+            "OPTIONS": {
+                "bucket_name": GS_BUCKET_NAME,
+                "credentials": GS_CREDENTIALS,
+                # "location": GS_LOCATION,  # for prefix, no you don't need it
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    GS_DEFAULT_ACL = None
+    GS_QUERYSTRING_AUTH = False
+
+    MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+    if GS_LOCATION:
+        MEDIA_URL += f"{GS_LOCATION}/"
+else:
+    # local
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    STORAGES = {
+        "default": {"BACKEND": DEFAULT_FILE_STORAGE},
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    MEDIA_ROOT = BASE_DIR / "media"
+    MEDIA_URL = "/media/"

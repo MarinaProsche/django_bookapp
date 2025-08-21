@@ -5,3 +5,4 @@ python-dotenv
 whitenoise
 django-storages
 google-cloud-storage
+psycopg[binary]

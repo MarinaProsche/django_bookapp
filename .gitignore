@@ -9,3 +9,4 @@ app_for_book/app_book/static/images/pictures_for_buzzwords/
 .env
 /secrets/
 /staticfiles/
+app_for_book/dump.json
