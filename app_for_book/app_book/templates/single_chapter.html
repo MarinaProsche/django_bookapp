@@ -23,8 +23,8 @@
                 {{ text.title_current_city }}
                 {% if text.title_home_city%}
                 →
-                {% endif %}
                 <div class="text-muted fs-4"> {{ text.get_title_home_city_display }}</div>
+                {% endif %}
             </h1>
         </div>
         <p>{{ text.main_text|replace:text.buzzword_names.all|safe|linebreaksbr }}</p>
