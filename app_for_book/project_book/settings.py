@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), '127.0.0.1', 'roman-v-otkrytkah.com']
 CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("ALLOWED_HOST")}', "http://127.0.0.1:8000", "https://roman-v-otkrytkah.com"]
@@ -185,20 +185,20 @@ PWA_APP_ORIENTATION = 'any'
 PWA_APP_START_URL = '/'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
-    {
-        "src": "/static/images/icon-favicon_192.png",
-        "sizes": "192x192"
-    },
-    {
-        "src": "/static/images/icon_favicon_512.png",
-        "sizes": "512x512"
-    }
+    # {
+    #     "src": "/static/images/icon-favicon_192.png",
+    #     "sizes": "192x192"
+    # },
+    # {
+    #     "src": "/static/images/icon_favicon_512.png",
+    #     "sizes": "512x512"
+    # }
 ]
 PWA_APP_ICONS_APPLE = [
-    {
-        "src": "/static/images/icon-favicon_192.png",
-        "sizes": "192x192"
-    },
+    # {
+    #     "src": "/static/images/icon-favicon_192.png",
+    #     "sizes": "192x192"
+    # },
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
