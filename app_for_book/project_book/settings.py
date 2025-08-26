@@ -30,7 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# DEBUG = True
+DEBUG = os.getenv("DEBUG", "0") == "1"
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), '127.0.0.1', 'roman-v-otkrytkah.com']
 CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("ALLOWED_HOST")}', "http://127.0.0.1:8000", "https://roman-v-otkrytkah.com"]
@@ -92,13 +93,16 @@ WSGI_APPLICATION = 'project_book.wsgi.application'
 # }
 
 if os.getenv("USE_POSTGRES", "0") == "1":
+    ICN = os.getenv("INSTANCE_CONNECTION_NAME", "")
+    DB_HOST = os.getenv("DB_HOST", f"/cloudsql/{ICN}")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": os.getenv("DB_NAME", "bookdb"),
             "USER": os.getenv("DB_USER", "bookuser"),
             "PASSWORD": os.getenv("DB_PASS", ""),
-            "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+            # "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+            "HOST": DB_HOST,
             "PORT": os.getenv("DB_PORT", "5432"),
         }
     }
@@ -264,3 +268,30 @@ else:
     }
     MEDIA_ROOT = BASE_DIR / "media"
     MEDIA_URL = "/media/"
+
+
+import os, logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"}
+    },
+    "loggers": {
+
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        },
+
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
+
+STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedStaticFilesStorage"

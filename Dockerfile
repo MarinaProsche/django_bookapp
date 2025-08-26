@@ -10,4 +10,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 # ENV GOOGLE_APPLICATION_CREDENTIALS=/app/secrets/bookapp-454110-1e63ec402267.json
 WORKDIR /app/app_for_book
+RUN python manage.py collectstatic --noinput
 CMD ["gunicorn", "project_book.wsgi:application", "--bind", "0.0.0.0:8000"]
